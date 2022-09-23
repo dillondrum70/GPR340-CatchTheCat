@@ -45,9 +45,6 @@ class World: GameObject {
   // check if catcher won
   bool catcherWinVerification();
 
-  // check if cat can move to the position required
-  bool catCanMoveToPosition(Point2D pos) const;
-
   // check if catcher can move to the position required
   bool catcherCanMoveToPosition(Point2D pos) const;
 
@@ -93,6 +90,9 @@ class World: GameObject {
   void Update(float deltaTime) override;
 
   void step();
+
+  // check if cat can move to the position required
+  bool catCanMoveToPosition(Point2D pos) const;
 };
 
 #endif  // WORLD_H
