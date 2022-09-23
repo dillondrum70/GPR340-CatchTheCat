@@ -20,28 +20,28 @@ Path Agent::FindCatShortestPath(World* world) {
         Point2D current = frontier.top().second;
 		Point2D next = Point2D(0, 0);
 
-		for (int i = 0; i < 6; i++) 
+		for (int i = 0; i < 6; i++)
 		{
-			switch (i) 
+			switch (i)
 			{
-				case 0:
-					next = World::NE(next);
-					break;
-				case 1:
-					next = World::NW(next);
-					break;
-				case 2:
-					next = World::W(next);
-					break;
-				case 3:
-					next = World::SW(next);
-					break;
-				case 4:
-					next = World::SE(next);
-					break;
-				case 5:
-					next = World::E(next);
-					break;
+			case 0:
+				next = World::NE(next);
+				break;
+			case 1:
+				next = World::NW(next);
+				break;
+			case 2:
+				next = World::W(next);
+				break;
+			case 3:
+				next = World::SW(next);
+				break;
+			case 4:
+				next = World::SE(next);
+				break;
+			case 5:
+				next = World::E(next);
+				break;
 			}
 
 			//if x coord is 0 or max x value or if y coord is 0 or max y value, return that path
@@ -61,9 +61,9 @@ Path Agent::FindCatShortestPath(World* world) {
 				break;
 			}
 
-			//if weight of next is null, it hasn't been explored yet, and if cat can move to position, position should be explored
-			//otherwise, we skip this position
-			if (weights[next] != NULL && world->catCanMoveToPosition(next))
+			//if weight of next is null, it hasn't been explored yet, or if it is greater than the new path, we need to explore it
+			//and if cat can move to position, position should be explored.  Otherwise, we skip this position
+			if ((weights[next] != 0 || weights[next] > weights[current] + 1) && world->catCanMoveToPosition(next))
 			{
 				weights[next] = weights[current] + 1;
 				parents[next] = current;
