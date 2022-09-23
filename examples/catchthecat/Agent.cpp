@@ -13,16 +13,15 @@ Path Agent::FindCatShortestPath(World* world) {
 
 	std::unordered_map<Point2D, Point2D> parents = std::unordered_map<Point2D, Point2D>();//store parents of each node
 
-	bool pathFound = false;
+	Path solution = Path();
 
 	while (!frontier.empty()) 
 	{
         Point2D current = frontier.top().second;
+		Point2D next = Point2D(0, 0);
 
 		for (int i = 0; i < 6; i++) 
 		{
-			Point2D next = Point2D(0, 0);
-              
 			switch (i) 
 			{
 				case 0:
@@ -48,13 +47,23 @@ Path Agent::FindCatShortestPath(World* world) {
 			//if x coord is 0 or max x value or if y coord is 0 or max y value, return that path
 			if (!world->isValidPosition(next))
 			{
-				pathFound = true;
-				break;//return path to next
+				//only executed once so algorithm time is O(n)
+				//the loop that iterates over the 6 directions is constant at 6 so it's complexity is technically O(1)
+				solution.push_front(next); //next move cat should take will be at the top
+				Point2D evaluate = current;
+
+				//trace back through parents to get path, if parent is cat, stop, break, and return path
+				while (evaluate != world->getCat())
+				{
+					solution.push_front(evaluate);
+					evaluate = parents[evaluate];
+				}
+				break;
 			}
 
-			//TODO: check that node hasn't been explored yet
-
-			if (world->catCanMoveToPosition(next))
+			//if weight of next is null, it hasn't been explored yet, and if cat can move to position, position should be explored
+			//otherwise, we skip this position
+			if (weights[next] != NULL && world->catCanMoveToPosition(next))
 			{
 				weights[next] = weights[current] + 1;
 				parents[next] = current;
@@ -65,13 +74,6 @@ Path Agent::FindCatShortestPath(World* world) {
 		frontier.pop();
 	}
 
-	if (pathFound)
-	{
-		//TODO: return path through parents
-	}
-	else
-	{
-		//return empty path, no path to exit exists
-		return Path();
-	}
+	//return empty path, no path to exit exists
+	return solution;
 }
