@@ -1,7 +1,8 @@
 #include "Agent.h"
 #include "World.h"
 
-Path Agent::FindCatShortestPath(World* world) {
+std::list<Path> Agent::FindCatShortestPath(World* world) {
+	std::list<Path> solutions; //first will be shortest, last will be one less than shortest, used for catcher
 
 	bool solutionFound = false;
 	Point2D catPos = world->getCat();
@@ -14,7 +15,7 @@ Path Agent::FindCatShortestPath(World* world) {
 
 	ParentMap parents = ParentMap();  // store parents of each node
 
-	Path solution = Path();
+	Path solutionPath = Path();
 	while (!frontier.empty() && !solutionFound) 
 	{
         Point2D current = frontier.top().second;
@@ -62,16 +63,25 @@ Path Agent::FindCatShortestPath(World* world) {
 					std::cout << "SUCCESS\n\n";
 					//only executed once so algorithm time is O(n)
 					//the loop that iterates over the 6 directions is constant at 6 so it's complexity is technically O(1)
-					solution.push_front(next); //next move cat should take will be at the top after loop, push everything to the front
+					solutionPath.push_front(next); //next move cat should take will be at the top after loop, push everything to the front
 					Point2D evaluate = current;
 					
 					//trace back through parents to get path, if parent is cat, stop, break, and return path
 					while (evaluate != catPos)
 					{
-						solution.push_front(evaluate);
+						solutionPath.push_front(evaluate);
 						evaluate = parents[evaluate.x][evaluate.y];
 					}
-					solutionFound = true;
+
+					//returns after finding all paths that are the same length as the shortest path AND one path that is 1 length greater,
+					//the one longer path is used for creating traps once there is only one path of shortest length
+					if (solutions.size() > 0 && solutionPath.size() > solutions.front().size())
+					{
+						solutionFound = true;
+					}
+
+					solutions.push_back(solutionPath);
+					solutionPath.clear();
 				}
 
 				//if weight of next is null, it hasn't been explored yet, or if it is greater than the new path, we need to explore it
@@ -96,5 +106,5 @@ Path Agent::FindCatShortestPath(World* world) {
 		}
 	}
 	//return empty path, no path to exit exists
-	return solution;
+	return solutions;
 }

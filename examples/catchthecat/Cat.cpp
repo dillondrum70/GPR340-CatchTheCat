@@ -23,7 +23,7 @@ Point2D Cat::Move(World* world) {
             throw "random out of range";
     }*/
 
-    Path optimal = FindCatShortestPath(world);
+    std::list<Path> optimal = FindCatShortestPath(world);
 
-    return optimal.front();
+    return optimal.front().front(); //first position (next position) of the first path (the shortest)
 }
