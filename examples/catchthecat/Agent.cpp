@@ -1,17 +1,15 @@
 #include "Agent.h"
 #include "World.h"
 
-#include <unordered_map>
-
 Path Agent::FindCatShortestPath(World* world) {
 
 	PriorityQueue frontier = PriorityQueue(); //next to explore
 	frontier.push(std::make_pair(0, world->getCat()));
 
-	std::unordered_map<Point2D, Weight> weights = std::unordered_map<Point2D, Weight>();//store weights of each node
-	weights[frontier.top().second] = 0;
+	WeightMap weights = WeightMap();  // store weights of each node
+    weights[frontier.top().second.x][frontier.top().second.y] = 0;
 
-	std::unordered_map<Point2D, Point2D> parents = std::unordered_map<Point2D, Point2D>();//store parents of each node
+	ParentMap parents = ParentMap();  // store parents of each node
 
 	Path solution = Path();
 
@@ -56,18 +54,18 @@ Path Agent::FindCatShortestPath(World* world) {
 				while (evaluate != world->getCat())
 				{
 					solution.push_front(evaluate);
-					evaluate = parents[evaluate];
+                    evaluate = parents[evaluate.x][evaluate.y];
 				}
 				break;
 			}
 
 			//if weight of next is null, it hasn't been explored yet, or if it is greater than the new path, we need to explore it
 			//and if cat can move to position, position should be explored.  Otherwise, we skip this position
-			if ((weights[next] != 0 || weights[next] > weights[current] + 1) && world->catCanMoveToPosition(next))
+			if ((weights[next.x][next.y] != 0 || weights[next.x][next.y] > weights[current.x][current.y] + 1) && world->catCanMoveToPosition(next))
 			{
-				weights[next] = weights[current] + 1;
-				parents[next] = current;
-				frontier.push(std::make_pair(weights[next], next));
+                weights[next.x][next.y] = weights[current.x][current.y] + 1;
+                parents[next.x][next.y] = current;
+                frontier.push(std::make_pair(weights[next.x][next.y], next));
 			}
 		}
 

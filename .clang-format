@@ -7,7 +7,7 @@ BasedOnStyle: Google
 DerivePointerAlignment: false
 PointerAlignment: Left
 
-IndentWidth: 2
+IndentWidth: 4
 
 IncludeBlocks: Merge
 IncludeCategories:
