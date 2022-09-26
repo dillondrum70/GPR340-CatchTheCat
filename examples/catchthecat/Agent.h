@@ -15,7 +15,7 @@ typedef std::list<Point2D> Path;
 typedef int Weight;
 typedef std::unordered_map<int, std::unordered_map<int, Point2D>> ParentMap;
 typedef std::unordered_map<int, std::unordered_map<int, int>> WeightMap;
-typedef std::priority_queue<std::pair<Weight, Point2D>, std::vector<std::pair<Weight, Point2D>>, std::greater<std::pair<Weight, Point2D>>> PriorityQueue;
+typedef std::priority_queue<std::pair<Weight, Point2D>, std::vector<std::pair<Weight, Point2D>>, std::less<std::pair<Weight, Point2D>>> PriorityQueue;
 
 class Agent {
 public:

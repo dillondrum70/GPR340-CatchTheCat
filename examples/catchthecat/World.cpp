@@ -237,6 +237,11 @@ bool World::catWinVerification() {
   return abs(catPosition.x) == sideOver2 || abs(catPosition.y) == sideOver2;
 }
 
+bool World::catWinsOnSpace(Point2D point) {
+    auto sideOver2 = sideSize / 2;
+    return abs(point.x) == sideOver2 || abs(point.y) == sideOver2;
+}
+
 bool World::catcherWinVerification() {
   return getContent(NE(catPosition)) &&
          getContent(NW(catPosition)) &&
