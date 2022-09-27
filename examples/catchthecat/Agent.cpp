@@ -105,6 +105,7 @@ std::list<Path> Agent::FindCatShortestPath(World* world) {
 			}
 		}
 		PrintMap(world, frontier, weights);
+		PrintQueue(frontier);
 	}
 	//return empty path, no path to exit exists
 	return solutions;
@@ -159,5 +160,14 @@ void Agent::PrintMap(World* world, PriorityQueue pq, WeightMap wm)
 			}
 		}
 		std::cout << std::endl;
+	}
+}
+
+void Agent::PrintQueue(PriorityQueue pq)
+{
+	for (int i = 0; i < pq.size(); i++)
+	{
+		std::cout << pq.top().weight << " - (" << pq.top().point.x << ", " << pq.top().point.y << ")\n";
+		pq.pop();
 	}
 }

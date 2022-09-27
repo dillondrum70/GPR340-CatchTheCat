@@ -31,7 +31,7 @@ struct Node
 typedef std::list<Point2D> Path;
 typedef std::unordered_map<int, std::unordered_map<int, Point2D>> ParentMap;
 typedef std::unordered_map<int, std::unordered_map<int, int>> WeightMap;
-typedef std::priority_queue<Node, std::vector<Node>, std::less<Node>> PriorityQueue;
+typedef std::priority_queue<Node, std::vector<Node>, std::greater<Node>> PriorityQueue;
 
 class Agent {
 public:
@@ -42,6 +42,7 @@ public:
   std::list<Path> FindCatShortestPath(World* world);
 
   void PrintMap(World* world, PriorityQueue pq, WeightMap wm);
+  void PrintQueue(PriorityQueue pq);
 };
 
 #endif  // AGENT_H
