@@ -8,49 +8,49 @@ std::list<Path> Agent::FindCatShortestPath(World* world) {
 	Point2D catPos = world->getCat();
 
 	PriorityQueue frontier = PriorityQueue(); //next to explore
-	frontier.push(std::make_pair(0, catPos));
+	frontier.push(Node(0, catPos));
 
 	WeightMap weights = WeightMap();  // store weights of each node
-    weights[frontier.top().second.x][frontier.top().second.y] = 0;
+    weights[frontier.top().point.x][frontier.top().point.y] = 0;
 
 	ParentMap parents = ParentMap();  // store parents of each node
 
 	Path solutionPath = Path();
 	while (!frontier.empty() && !solutionFound) 
 	{
-        Point2D current = frontier.top().second;
+        Node current = frontier.top();
 		frontier.pop();
 		Point2D next;
 
-		std::cout << "\nCurrent: (" << current.x << ", " << current.y << ")\n";
+		std::cout << "\nCurrent: (" << current.point.x << ", " << current.point.y << ")\n";
 
-		for (int i = 0; i < 6; i++)
+		for (int i = 0; i < 6 && !solutionFound; i++)
 		{
 			switch (i)
 			{
 			case 0:
 				std::cout << "NE : ";
-				next = World::NE(current);
+				next = World::NE(current.point);
 				break;
 			case 1:
 				std::cout << "NW : ";
-				next = World::NW(current);
+				next = World::NW(current.point);
 				break;
 			case 2:
 				std::cout << "W : ";
-				next = World::W(current);
+				next = World::W(current.point);
 				break;
 			case 3:
 				std::cout << "SW : ";
-				next = World::SW(current);
+				next = World::SW(current.point);
 				break;
 			case 4:
 				std::cout << "SE : ";
-				next = World::SE(current);
+				next = World::SE(current.point);
 				break;
 			case 5:
 				std::cout << "E : ";
-				next = World::E(current);
+				next = World::E(current.point);
 				break;
 			}
 			std::cout << "Next: (" << next.x << ", " << next.y << ")\n";
@@ -64,7 +64,7 @@ std::list<Path> Agent::FindCatShortestPath(World* world) {
 					//only executed once so algorithm time is O(n)
 					//the loop that iterates over the 6 directions is constant at 6 so it's complexity is technically O(1)
 					solutionPath.push_front(next); //next move cat should take will be at the top after loop, push everything to the front
-					Point2D evaluate = current;
+					Point2D evaluate = current.point;
 					
 					//trace back through parents to get path, if parent is cat, stop, break, and return path
 					while (evaluate != catPos)
@@ -86,11 +86,11 @@ std::list<Path> Agent::FindCatShortestPath(World* world) {
 
 				//if weight of next is null, it hasn't been explored yet, or if it is greater than the new path, we need to explore it
 				//and if cat can move to position, position should be explored.  Otherwise, we skip this position
-				if (((weights[next.x][next.y] == 0 && next != catPos) || weights[next.x][next.y] > weights[current.x][current.y] + 1))
+				if (((weights[next.x][next.y] == 0 && next != catPos) || weights[next.x][next.y] > current.weight + 1))
 				{
-					weights[next.x][next.y] = weights[current.x][current.y] + 1;
-					parents[next.x][next.y] = current;
-					frontier.push(std::make_pair(weights[next.x][next.y], next));
+					weights[next.x][next.y] = current.weight + 1;
+					parents[next.x][next.y] = current.point;
+					frontier.push(Node(weights[next.x][next.y], next));
 					std::cout << "Parent: (" << parents[next.x][next.y].x << ", " << parents[next.x][next.y].y << ")\n";
 					std::cout << "Total Weight: " << weights[next.x][next.y] << "\n\n";
 				}
@@ -104,7 +104,60 @@ std::list<Path> Agent::FindCatShortestPath(World* world) {
 				std::cout << "Can not move to (" << next.x << ", " << next.y << ")\n\n";
 			}
 		}
+		PrintMap(world, frontier, weights);
 	}
 	//return empty path, no path to exit exists
 	return solutions;
+}
+
+void Agent::PrintMap(World* world, PriorityQueue pq, WeightMap wm)
+{
+	for (int y = -world->getWorldSideSize() / 2; y < world->getWorldSideSize() / 2; y++)
+	{
+		if (abs(y) % 2 == 1)
+		{
+			std::cout << "  ";
+		}
+
+		for (int x = -world->getWorldSideSize() / 2; x < world->getWorldSideSize() / 2; x++)
+		{
+			Point2D current = Point2D(x, y);
+
+			if (world->getCat() == current)
+			{
+				std::cout << "C   ";
+			}
+			else if (world->getContent(current))
+			{
+				std::cout << "#   ";
+			}
+			else
+			{
+				bool inFrontier = false;
+				PriorityQueue temp = pq;
+				for (int i = 0; i < temp.size(); i++)
+				{
+					if (temp.top().point == current)
+					{
+						std::cout << "1   "; //if in frontier, shows 1
+						inFrontier = true;
+						break;
+					}
+					temp.pop();
+				}
+				if (!inFrontier)
+				{
+					if (wm[x][y] != 0)
+					{
+						std::cout << "2   ";
+					}
+					else
+					{
+						std::cout << "0   ";
+					}
+				}
+			}
+		}
+		std::cout << std::endl;
+	}
 }
