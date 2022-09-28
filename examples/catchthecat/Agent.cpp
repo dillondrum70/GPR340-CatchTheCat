@@ -22,45 +22,45 @@ std::list<Path> Agent::FindCatShortestPath(World* world) {
 		frontier.pop();
 		Point2D next;
 
-		std::cout << "\nCurrent: (" << current.point.x << ", " << current.point.y << ")\n";
+		//std::cout << "\nCurrent: (" << current.point.x << ", " << current.point.y << ")\n";
 
 		for (int i = 0; i < 6 && !solutionFound; i++)
 		{
 			switch (i)
 			{
 			case 0:
-				std::cout << "NE : ";
+				//std::cout << "NE : ";
 				next = World::NE(current.point);
 				break;
 			case 1:
-				std::cout << "NW : ";
+				//std::cout << "NW : ";
 				next = World::NW(current.point);
 				break;
 			case 2:
-				std::cout << "W : ";
+				//std::cout << "W : ";
 				next = World::W(current.point);
 				break;
 			case 3:
-				std::cout << "SW : ";
+				//std::cout << "SW : ";
 				next = World::SW(current.point);
 				break;
 			case 4:
-				std::cout << "SE : ";
+				//std::cout << "SE : ";
 				next = World::SE(current.point);
 				break;
 			case 5:
-				std::cout << "E : ";
+				//std::cout << "E : ";
 				next = World::E(current.point);
 				break;
 			}
-			std::cout << "Next: (" << next.x << ", " << next.y << ")\n";
+			//std::cout << "Next: (" << next.x << ", " << next.y << ")\n";
 
 			if (world->isValidPosition(next) && !world->getContent(next))
 			{
 				//if x coord is min x or max x value or if y coord is min y or max y value, return that path
 				if (world->catWinsOnSpace(next))
 				{
-					std::cout << "SUCCESS\n\n";
+					//std::cout << "SUCCESS\n\n";
 					//only executed once so algorithm time is O(n)
 					//the loop that iterates over the 6 directions is constant at 6 so it's complexity is technically O(1)
 					solutionPath.push_front(next); //next move cat should take will be at the top after loop, push everything to the front
@@ -91,21 +91,21 @@ std::list<Path> Agent::FindCatShortestPath(World* world) {
 					weights[next.x][next.y] = current.weight + 1;
 					parents[next.x][next.y] = current.point;
 					frontier.push(Node(weights[next.x][next.y], next));
-					std::cout << "Parent: (" << parents[next.x][next.y].x << ", " << parents[next.x][next.y].y << ")\n";
-					std::cout << "Total Weight: " << weights[next.x][next.y] << "\n\n";
+					//std::cout << "Parent: (" << parents[next.x][next.y].x << ", " << parents[next.x][next.y].y << ")\n";
+					//std::cout << "Total Weight: " << weights[next.x][next.y] << "\n\n";
 				}
 				else
 				{
-					std::cout << "Already Explored\n\n";
+					//std::cout << "Already Explored\n\n";
 				}
 			}
 			else
 			{
-				std::cout << "Can not move to (" << next.x << ", " << next.y << ")\n\n";
+				//std::cout << "Can not move to (" << next.x << ", " << next.y << ")\n\n";
 			}
 		}
-		PrintMap(world, frontier, weights);
-		PrintQueue(frontier);
+		//PrintMap(world, frontier, weights);
+		//PrintQueue(frontier);
 	}
 	//return empty path, no path to exit exists
 	return solutions;
@@ -113,20 +113,24 @@ std::list<Path> Agent::FindCatShortestPath(World* world) {
 
 void Agent::PrintMap(World* world, PriorityQueue pq, WeightMap wm)
 {
-	for (int y = -world->getWorldSideSize() / 2; y < world->getWorldSideSize() / 2; y++)
+	for (int y = -world->getWorldSideSize() / 2; y < (world->getWorldSideSize() / 2) + 1; y++)
 	{
 		if (abs(y) % 2 == 1)
 		{
 			std::cout << "  ";
 		}
 
-		for (int x = -world->getWorldSideSize() / 2; x < world->getWorldSideSize() / 2; x++)
+		for (int x = -world->getWorldSideSize() / 2; x < (world->getWorldSideSize() / 2) + 1; x++)
 		{
 			Point2D current = Point2D(x, y);
 
 			if (world->getCat() == current)
 			{
 				std::cout << "C   ";
+			}
+			else if (current == Point2D())
+			{
+				std::cout << "Z   ";
 			}
 			else if (world->getContent(current))
 			{

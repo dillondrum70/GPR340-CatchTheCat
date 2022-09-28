@@ -4,6 +4,8 @@
 #include "Agent.h"
 
 class Catcher: public Agent {
+private:
+    bool noEscape = false;
  public:
     explicit Catcher():Agent(){};
     Point2D Move(World*) override;

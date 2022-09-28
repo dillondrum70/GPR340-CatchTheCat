@@ -3,27 +3,61 @@
 #include <stdexcept>
 
 Point2D Cat::Move(World* world) {
-    /*auto rand = Random::Range(0, 5);
+    if (!noEscape)
+    {
+        std::list<Path> optimal = FindCatShortestPath(world);
+        if (optimal.size() > 0)
+        {
+            return optimal.front().front(); //first position (next position) of the first path (the shortest)
+        }
+        
+        noEscape = true;
+    }
+    
+    //Won't be executed if there is an escape for the cat, it would return first
+    auto pos = world->getCat();
 
-     auto pos = world->getCat();
-    switch(rand){
+    //all adjacent positions
+    std::vector<int> adjacentPositions = { 0, 1, 2, 3, 4, 5 };
+
+    //loop through adjacent positions and randomly choose the first valid position
+    for (int i = 0; i < adjacentPositions.size(); i++)
+    {
+        //choose random position
+        auto rand = Random::Range(0, adjacentPositions.size() - 1);
+
+        switch (adjacentPositions[rand]) {
         case 0:
-            return World::NE(pos);
+            if (world->catCanMoveToPosition(World::NE(pos)))
+                return World::NE(pos);
+            break;
         case 1:
-            return World::NW(pos);
+            if (world->catCanMoveToPosition(World::NW(pos)))
+                return World::NW(pos);
+            break;
         case 2:
-            return World::E(pos);
+            if (world->catCanMoveToPosition(World::E(pos)))
+                return World::E(pos);
+            break;
         case 3:
-            return World::W(pos);
+            if (world->catCanMoveToPosition(World::W(pos)))
+                return World::W(pos);
+            break;
         case 4:
-            return World::SW(pos);
+            if (world->catCanMoveToPosition(World::SW(pos)))
+                return World::SW(pos);
+            break;
         case 5:
-            return World::SE(pos);
+            if (world->catCanMoveToPosition(World::SE(pos)))
+                return World::SE(pos);
+            break;
         default:
             throw "random out of range";
-    }*/
+        }
 
-    std::list<Path> optimal = FindCatShortestPath(world);
+        //erase this position from list of valid adjacent positions
+        adjacentPositions.erase(adjacentPositions.begin(), adjacentPositions.end() + rand);
+    }
 
-    return optimal.front().front(); //first position (next position) of the first path (the shortest)
+    return pos; //return cat position, trapped, no escape if all sides are closed off
 }

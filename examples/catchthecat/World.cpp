@@ -193,6 +193,7 @@ Point2D World::getCat() {
 
 void World::step() {
   if(catWon || catcherWon) {
+      std::cout << "Cat Won: " << catWon << std::endl;
     clearWorld();
     return;
   }
@@ -207,6 +208,7 @@ void World::step() {
       catWon = catWinVerification();
     }
     else {
+        std::cout << "\n\nCAT ERROR - " << move << "\n\n";
       isSimulating = false;
       catcherWon = true; // cat made a bad move
     }
@@ -218,6 +220,7 @@ void World::step() {
           true;
       catcherWon = catcherWinVerification();
     } else {
+        std::cout << "\n\nCATCHER ERROR - " << move << "\n\n";
       isSimulating = false;
       catWon = true; // catcher made a bad move
     }
@@ -256,8 +259,8 @@ bool World::catCanMoveToPosition(Point2D p) const {
 }
 bool World::catcherCanMoveToPosition(Point2D p) const {
   auto sideOver2 = sideSize/2;
-  return p.x!=catPosition.x &&
-         p.y!=catPosition.y &&
+  return (p.x!=catPosition.x ||
+         p.y!=catPosition.y) &&
          abs(p.x) <= sideOver2 &&
          abs(p.y) <= sideOver2;
 }

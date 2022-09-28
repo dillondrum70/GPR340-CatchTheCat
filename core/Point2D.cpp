@@ -31,6 +31,12 @@ bool Point2D::operator>(const Point2D& rhs) const {
     return false;
 }
 
+std::ostream& operator<<(std::ostream& os, const Point2D& point)
+{
+    os << "(" << point.x << ", " << point.y << ")";
+    return os;
+}
+
 Point2D &Point2D::operator=(const Point2D &rhs) {
   //Check for self-assignment
   if (this == &rhs)
