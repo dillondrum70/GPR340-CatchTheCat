@@ -58,8 +58,10 @@ std::vector<Path> Agent::FindCatShortestPath(World* world) {
 			if (world->isValidPosition(next) && !world->getContent(next))
 			{
 				//if x coord is min x or max x value or if y coord is min y or max y value, return that path
-				if (world->catWinsOnSpace(next))
+				if (world->catWinsOnSpace(next) && (weights[next.x][next.y] == 0 && next != catPos))
 				{
+					weights[next.x][next.y] = current.weight + 1;
+					parents[next.x][next.y] = current.point;
 					//std::cout << "SUCCESS\n\n";
 					//only executed once so algorithm time is O(n)
 					//the loop that iterates over the 6 directions is constant at 6 so it's complexity is technically O(1)
