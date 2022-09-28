@@ -16,34 +16,26 @@ Point2D Catcher::Move(World* world) {
         int sideOver2 = world->getWorldSideSize() / 2;
         Point2D cat = world->getCat();
 
-        std::cout << optimal.size() << std::endl;
+        //std::cout << optimal.size() << std::endl;
 
         //return normal optimal path if the cat is adjacent to an exit space
-        if (optimal.size() > 0 && (abs(cat.x) == sideOver2 - 1 || abs(cat.y) == sideOver2 - 1))
+        if (optimal.size() > 0 && world->catWinsOnSpace(optimal[0].back()) && world->catCanMoveToPosition(optimal[0].back()))
         {
+            //std::cout << "Adjacent To Exit\n";
             return optimal[0].back(); //last position of the first path (the shortest)
         }
 
         //block second shortest path if there is only the shortest path and the path that is one longer than the shortest
         if (optimal.size() == 2 && optimal[0].size() != optimal[1].size()) 
         {
-            std::cout << "2 unequal paths, " << optimal[0].size() << " and " << optimal[1].size() << ", choose second shortest\n";
-            for (auto const& i : optimal[0])
-            {
-                std::cout << i << " -> ";
-            }
-            std::cout << std::endl;
-            for (auto const& i : optimal[1])
-            {
-                std::cout << i << " -> ";
-            }
-            std::cout << std::endl;
+            //std::cout << "Two Unequal Paths\n";
             return optimal[1].back();
         }
 
         //do highest priority check based on number of adjacent walls
         if (optimal.size() >= 2)
         {
+            //std::cout << "Highest Priority\n";
             //return optimal[1].back(); //last position of the second path (the second shortest)
             return FindHighestPriority(optimal, world).second.back(); //last position of the path with the highest priority
         }
@@ -51,6 +43,18 @@ Point2D Catcher::Move(World* world) {
         //catch in case the last ones fail and there is still a shortest path
         if(optimal.size() > 0) 
         {
+            //std::cout << optimal[0].size() << " and " << optimal[1].size() << std::endl;
+
+            //print paths
+            /*for (int j = 0; j < optimal.size(); j++)
+            {
+                for (auto const& i : optimal[j])
+                {
+                    std::cout << i << " -> ";
+                }
+                std::cout << std::endl;
+            }*/
+
             return optimal[0].back(); //last position of the first path (the shortest)
         }
 
@@ -109,12 +113,12 @@ std::pair<int, Path> Catcher::FindHighestPriority(std::vector<Path> optimal, Wor
     int sideOver2 = world->getWorldSideSize() / 2;
 
     //DONE: Ignore top left and bottom left corners
-    //DOING: Prioritize paths not adjacent to existing walls
+    //DONE: Prioritize paths not adjacent to existing walls
     //TODO: Special case for top right and bottom right corners, getting to (sideOver2 - 1, sideOver2 - 1) or (sideOver2 - 1, -sideOver2 + 1)
         //means that there may be up to 3 exits adjacent, may be different spaces depending on which side the cat approaches from
     //TODO: Handle cases where wall blocks access to an exit space in a way that you can only reach that exit space through other exit spaces,
         //shouldn't waste time blocking off that blocked exit space
-        // 
+        //May already be handled indirectly with priority system
     //Point2D topLeft = Point2D(-sideOver2, -sideOver2);
     //Point2D bottomLeft = Point2D(-sideOver2, sideOver2);
 
