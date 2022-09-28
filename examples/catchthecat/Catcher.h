@@ -9,6 +9,7 @@ private:
  public:
     explicit Catcher():Agent(){};
     Point2D Move(World*) override;
+    void Reset() { noEscape = false; }
 };
 
 #endif  // CATCHER_H

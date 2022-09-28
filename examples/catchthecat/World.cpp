@@ -26,6 +26,8 @@ World::World(Engine *pEngine, int size): GameObject(pEngine), sideSize(size){
 }
 
 void World::clearWorld() {
+    cat->Reset();
+    catcher->Reset();
   worldState.clear();
   worldState.resize(sideSize*sideSize);
   for(auto && i : worldState) i= false;
@@ -193,7 +195,7 @@ Point2D World::getCat() {
 
 void World::step() {
   if(catWon || catcherWon) {
-      std::cout << "Cat Won: " << catWon << std::endl;
+      std::cout << "Cat Won: " << (catWon ? "true" : "false") << std::endl;
     clearWorld();
     return;
   }

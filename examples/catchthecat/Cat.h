@@ -10,6 +10,7 @@ private:
 public:
     explicit Cat():Agent(){};
     Point2D Move(World *) override;
+    void Reset() { noEscape = false; }
 };
 
 #endif  // CAT_H

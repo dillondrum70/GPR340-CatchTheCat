@@ -3,6 +3,7 @@
 #include <stdexcept>
 
 Point2D Cat::Move(World* world) {
+    
     if (!noEscape)
     {
         std::list<Path> optimal = FindCatShortestPath(world);
@@ -13,7 +14,7 @@ Point2D Cat::Move(World* world) {
         
         noEscape = true;
     }
-    
+
     //Won't be executed if there is an escape for the cat, it would return first
     auto pos = world->getCat();
 
@@ -21,10 +22,10 @@ Point2D Cat::Move(World* world) {
     std::vector<int> adjacentPositions = { 0, 1, 2, 3, 4, 5 };
 
     //loop through adjacent positions and randomly choose the first valid position
-    for (int i = 0; i < adjacentPositions.size(); i++)
+    for (int i = 0; i < 6; i++)
     {
         //choose random position
-        auto rand = Random::Range(0, adjacentPositions.size() - 1);
+        int rand = Random::Range(0, adjacentPositions.size() - 1);
 
         switch (adjacentPositions[rand]) {
         case 0:
@@ -56,7 +57,7 @@ Point2D Cat::Move(World* world) {
         }
 
         //erase this position from list of valid adjacent positions
-        adjacentPositions.erase(adjacentPositions.begin(), adjacentPositions.end() + rand);
+        adjacentPositions.erase(adjacentPositions.begin() + rand);
     }
 
     return pos; //return cat position, trapped, no escape if all sides are closed off

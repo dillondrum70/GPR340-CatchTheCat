@@ -13,12 +13,24 @@ Point2D Catcher::Move(World* world) {
     if (!noEscape)
     {
         std::list<Path> optimal = FindCatShortestPath(world);
+        int sideOver2 = world->getWorldSideSize() / 2;
+        Point2D cat = world->getCat();
 
-        if (optimal.size() > 0)
+        //TODO: Ignore top left and bottom left corners
+        //TODO: Special case for top right and bottom right corners
+        //TODO: Prioritize paths not adjacent to existing walls
+
+        //create traps by blocking second shortest if cat is not adjacent to an exit
+        if (optimal.size() > 1 && (abs(cat.x) != sideOver2 - 1 && abs(cat.y) != sideOver2 - 1))
+        {
+            optimal.pop_front(); //read past shortest
+            return optimal.front().back(); //last position of the second path (the second shortest)
+        }
+        else if (optimal.size() > 0)
         {
             return optimal.front().back(); //last position of the first path (the shortest)
         }
-        
+
         noEscape = true;
     }
 
@@ -28,7 +40,7 @@ Point2D Catcher::Move(World* world) {
     std::vector<int> adjacentPositions = { 0, 1, 2, 3, 4, 5 };
 
     //loop through adjacent positions and randomly choose the first valid position
-    for (int i = 0; i < adjacentPositions.size(); i++)
+    for (int i = 0; i < 6; i++)
     {
         //choose random position
         auto rand = Random::Range(0, adjacentPositions.size() - 1);
@@ -63,7 +75,7 @@ Point2D Catcher::Move(World* world) {
         }
 
         //erase this position from list of valid adjacent positions
-        adjacentPositions.erase(adjacentPositions.begin(), adjacentPositions.end() + rand);
+        adjacentPositions.erase(adjacentPositions.begin() + rand);
     }
 
     return pos; //return cat position, trapped, should never happen, if cat is trapped, it should know that before executing Catcher.Move()
