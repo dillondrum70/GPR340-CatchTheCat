@@ -18,6 +18,7 @@ Point2D Cat::Move(World* world) {
 
     //Won't be executed if there is an escape for the cat, it would return first
     auto pos = world->getCat();
+    int sideOver2 = world->getWorldSideSize() / 2;
 
     //all adjacent positions
     std::vector<int> adjacentPositions = { 0, 1, 2, 3, 4, 5 };
@@ -30,12 +31,12 @@ Point2D Cat::Move(World* world) {
 
         switch (adjacentPositions[rand]) {
         case 0:
-            if (world->catCanMoveToPosition(World::NE(pos)))
-                return World::NE(pos);
+            if (world->catCanMoveToPosition(World::NE(pos, sideOver2)))
+                return World::NE(pos, sideOver2);
             break;
         case 1:
-            if (world->catCanMoveToPosition(World::NW(pos)))
-                return World::NW(pos);
+            if (world->catCanMoveToPosition(World::NW(pos, sideOver2)))
+                return World::NW(pos, sideOver2);
             break;
         case 2:
             if (world->catCanMoveToPosition(World::E(pos)))
@@ -46,12 +47,12 @@ Point2D Cat::Move(World* world) {
                 return World::W(pos);
             break;
         case 4:
-            if (world->catCanMoveToPosition(World::SW(pos)))
-                return World::SW(pos);
+            if (world->catCanMoveToPosition(World::SW(pos, sideOver2)))
+                return World::SW(pos, sideOver2);
             break;
         case 5:
-            if (world->catCanMoveToPosition(World::SE(pos)))
-                return World::SE(pos);
+            if (world->catCanMoveToPosition(World::SE(pos, sideOver2)))
+                return World::SE(pos, sideOver2);
             break;
         default:
             throw "random out of range";

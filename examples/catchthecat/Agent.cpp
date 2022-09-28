@@ -2,11 +2,12 @@
 #include "World.h"
 
 std::vector<Path> Agent::FindCatShortestPath(World* world) {
-	std::cout << "-----------------------------------------------------------\n";
+	//std::cout << "-----------------------------------------------------------\n";
 	std::vector<Path> solutions; //first will be shortest, last will be one less than shortest, used for catcher
 
 	bool solutionFound = false;
 	Point2D catPos = world->getCat();
+	int sideOver2 = world->getWorldSideSize() / 2;
 
 	PriorityQueue frontier = PriorityQueue(); //next to explore
 	frontier.push(Node(0, catPos));
@@ -31,11 +32,11 @@ std::vector<Path> Agent::FindCatShortestPath(World* world) {
 			{
 			case 0:
 				//std::cout << "NE : ";
-				next = World::NE(current.point);
+				next = World::NE(current.point, sideOver2);
 				break;
 			case 1:
 				//std::cout << "NW : ";
-				next = World::NW(current.point);
+				next = World::NW(current.point, sideOver2);
 				break;
 			case 2:
 				//std::cout << "W : ";
@@ -43,11 +44,11 @@ std::vector<Path> Agent::FindCatShortestPath(World* world) {
 				break;
 			case 3:
 				//std::cout << "SW : ";
-				next = World::SW(current.point);
+				next = World::SW(current.point, sideOver2);
 				break;
 			case 4:
 				//std::cout << "SE : ";
-				next = World::SE(current.point);
+				next = World::SE(current.point, sideOver2);
 				break;
 			case 5:
 				//std::cout << "E : ";
@@ -83,12 +84,12 @@ std::vector<Path> Agent::FindCatShortestPath(World* world) {
 						solutionFound = true;
 					}
 					//print solution
-					std::cout << catPos << " -> ";
+					/*std::cout << catPos << " -> ";
 					for (auto const& i : solutionPath)
 					{
 						std::cout << i << " -> ";
 					}
-					std::cout << std::endl;
+					std::cout << std::endl;*/
 
 					solutions.push_back(solutionPath);
 					solutionPath.clear();
@@ -114,8 +115,8 @@ std::vector<Path> Agent::FindCatShortestPath(World* world) {
 				//std::cout << "Can not move to (" << next.x << ", " << next.y << ")\n\n";
 			}
 		}
-		PrintMap(world, frontier, weights);
-		PrintQueue(frontier);
+		//PrintMap(world, frontier, weights);
+		//PrintQueue(frontier);
 	}
 	//return empty path, no path to exit exists
 	return solutions;

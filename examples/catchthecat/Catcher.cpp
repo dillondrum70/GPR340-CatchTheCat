@@ -9,13 +9,12 @@ Point2D Catcher::Move(World* world) {
     if(cat.x!=p.x && cat.y!=p.y && !world->getContent(p))
       return p;
   }*/
+    int sideOver2 = world->getWorldSideSize() / 2;
+    Point2D cat = world->getCat();
 
     if (!noEscape)
     {
         std::vector<Path> optimal = FindCatShortestPath(world);
-        int sideOver2 = world->getWorldSideSize() / 2;
-        Point2D cat = world->getCat();
-
         //std::cout << optimal.size() << std::endl;
 
         //return normal optimal path if the cat is adjacent to an exit space
@@ -74,12 +73,12 @@ Point2D Catcher::Move(World* world) {
 
         switch (adjacentPositions[rand]) {
         case 0:
-            if (world->catCanMoveToPosition(World::NE(pos)))
-                return World::NE(pos);
+            if (world->catCanMoveToPosition(World::NE(pos, sideOver2)))
+                return World::NE(pos, sideOver2);
             break;
         case 1:
-            if (world->catCanMoveToPosition(World::NW(pos)))
-                return World::NW(pos);
+            if (world->catCanMoveToPosition(World::NW(pos, sideOver2)))
+                return World::NW(pos, sideOver2);
             break;
         case 2:
             if (world->catCanMoveToPosition(World::E(pos)))
@@ -90,12 +89,12 @@ Point2D Catcher::Move(World* world) {
                 return World::W(pos);
             break;
         case 4:
-            if (world->catCanMoveToPosition(World::SW(pos)))
-                return World::SW(pos);
+            if (world->catCanMoveToPosition(World::SW(pos, sideOver2)))
+                return World::SW(pos, sideOver2);
             break;
         case 5:
-            if (world->catCanMoveToPosition(World::SE(pos)))
-                return World::SE(pos);
+            if (world->catCanMoveToPosition(World::SE(pos, sideOver2)))
+                return World::SE(pos, sideOver2);
             break;
         default:
             throw "random out of range";
@@ -181,22 +180,22 @@ std::pair<int, Path> Catcher::FindHighestPriority(std::vector<Path> optimal, Wor
 
                 if (back.y > 0) //if on lower side of map, northeast and northwest
                 {
-                    if (!world->getContent(World::NE(back)))
+                    if (!world->getContent(World::NE(back, sideOver2)))
                     {
                         p++;
                     }
-                    if (!world->getContent(World::NW(back)))
+                    if (!world->getContent(World::NW(back, sideOver2)))
                     {
                         p++;
                     }
                 }
                 else if (back.y < 0) //if on upper side of map, check southeast and southwest
                 {
-                    if (!world->getContent(World::SE(back)))
+                    if (!world->getContent(World::SE(back, sideOver2)))
                     {
                         p++;
                     }
-                    if (!world->getContent(World::SW(back)))
+                    if (!world->getContent(World::SW(back, sideOver2)))
                     {
                         p++;
                     }

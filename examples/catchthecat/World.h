@@ -50,12 +50,12 @@ class World: GameObject {
   explicit World(Engine* pEngine, int size, bool catTurn, Point2D cat, std::vector<bool> world);
 
   // directions
-  static Point2D NE(const Point2D &p);
-  static Point2D NW(const Point2D &p);
+  static Point2D NE(const Point2D &p, int sizeOver2);
+  static Point2D NW(const Point2D &p, int sizeOver2);
   static Point2D E(const Point2D &p);
   static Point2D W(const Point2D &p);
-  static Point2D SE(const Point2D &p);
-  static Point2D SW(const Point2D &p);
+  static Point2D SE(const Point2D &p, int sizeOver2);
+  static Point2D SW(const Point2D &p, int sizeOver2);
 
   // returns the cat position
   Point2D getCat();
@@ -81,7 +81,7 @@ class World: GameObject {
   // check if point is inside the world
   bool isValidPosition(const Point2D& p);
 
-  static bool isNeighbor(const Point2D& p1, const Point2D &p2);
+  static bool isNeighbor(const Point2D& p1, const Point2D &p2, int sideover2);
 
   void OnDraw(SDL_Renderer* renderer) override;
   void OnGui(ImGuiContext *context) override;

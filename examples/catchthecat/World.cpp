@@ -50,28 +50,57 @@ Point2D World::W(const Point2D& p) {
   return {p.x-1, p.y};
 }
 
-Point2D World::NE(const Point2D& p) {
-  if(p.y%2)
-    return {p.x+1, p.y-1};
-  return {p.x, p.y-1};
+Point2D World::NE(const Point2D& p, int sizeOver2) {
+    //sideOver2 even
+    if (sizeOver2 % 2 == 0)
+    {
+        if (p.y % 2)
+            return { p.x + 1, p.y - 1 };
+        return { p.x, p.y - 1 };
+    }
+    //sideOver2 odd
+    if (p.y % 2)
+        return { p.x, p.y - 1 };
+    return { p.x + 1, p.y - 1 };
 }
 
-Point2D World::NW(const Point2D& p) {
-  if(p.y%2)
-    return {p.x, p.y-1};
-  return {p.x-1, p.y-1};
+Point2D World::NW(const Point2D& p, int sizeOver2) {
+    if (sizeOver2 % 2 == 0)
+    {
+        if (p.y % 2)
+            return { p.x, p.y - 1 };
+        return { p.x - 1, p.y - 1 };
+    }
+    
+    if (p.y % 2)
+        return { p.x - 1, p.y - 1 };
+    return { p.x, p.y - 1 };
 }
 
-Point2D World::SE(const Point2D& p) {
-  if(p.y%2)
-    return {p.x, p.y+1};
-  return {p.x-1, p.y+1};
+Point2D World::SE(const Point2D& p, int sizeOver2) {
+    if (sizeOver2 % 2 == 0)
+    {
+        if (p.y % 2)
+            return { p.x, p.y + 1 };
+        return { p.x - 1, p.y + 1 };
+    }
+  
+    if (p.y % 2)
+        return { p.x - 1, p.y + 1 };
+    return { p.x, p.y + 1 };
 }
 
-Point2D World::SW(const Point2D& p) {
-  if(p.y%2)
-    return {p.x+1, p.y+1};
-  return {p.x, p.y+1};
+Point2D World::SW(const Point2D& p, int sizeOver2) {
+    if (sizeOver2 % 2 == 0)
+    {
+        if (p.y % 2)
+            return { p.x + 1, p.y + 1 };
+        return { p.x, p.y + 1 };
+    }
+  
+    if (p.y % 2)
+        return { p.x, p.y + 1 };
+    return { p.x + 1, p.y + 1 };
 }
 
 bool World::isValidPosition(const Point2D& p) {
@@ -83,13 +112,13 @@ bool World::isValidPosition(const Point2D& p) {
         (p.y>=-sideOver2);
 }
 
-bool World::isNeighbor(const Point2D &p1, const Point2D &p2) {
-  return NE(p1) == p2 ||
-         NW(p1) == p2 ||
+bool World::isNeighbor(const Point2D &p1, const Point2D &p2, int sideOver2) {
+  return NE(p1, sideOver2) == p2 ||
+         NW(p1, sideOver2) == p2 ||
          E(p1) == p2 ||
          W(p1) == p2 ||
-         SE(p1) == p2 ||
-         SW(p1) == p2;
+         SE(p1, sideOver2) == p2 ||
+         SW(p1, sideOver2) == p2;
 }
 
 void World::OnDraw(SDL_Renderer* renderer) {
@@ -248,16 +277,17 @@ bool World::catWinsOnSpace(Point2D point) {
 }
 
 bool World::catcherWinVerification() {
-  return getContent(NE(catPosition)) &&
-         getContent(NW(catPosition)) &&
+    int sideOver2 = sideSize / 2;
+  return getContent(NE(catPosition, sideOver2)) &&
+         getContent(NW(catPosition, sideOver2)) &&
          getContent(E(catPosition)) &&
          getContent(W(catPosition)) &&
-         getContent(SE(catPosition)) &&
-         getContent(SW(catPosition));
+         getContent(SE(catPosition, sideOver2)) &&
+         getContent(SW(catPosition, sideOver2));
 }
 
 bool World::catCanMoveToPosition(Point2D p) const {
-  return isNeighbor(catPosition, p) && !getContent(p);
+  return isNeighbor(catPosition, p, sideSize / 2) && !getContent(p);
 }
 bool World::catcherCanMoveToPosition(Point2D p) const {
   auto sideOver2 = sideSize/2;
