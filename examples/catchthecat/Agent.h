@@ -39,7 +39,7 @@ public:
   virtual Point2D Move(World*)=0;
 
   //returns empty Path() if no winning path exists, returns shortest path otherwise
-  std::list<Path> FindCatShortestPath(World* world);
+  std::vector<Path> FindCatShortestPath(World* world);
 
   void PrintMap(World* world, PriorityQueue pq, WeightMap wm);
   void PrintQueue(PriorityQueue pq);

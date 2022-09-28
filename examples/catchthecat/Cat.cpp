@@ -6,10 +6,10 @@ Point2D Cat::Move(World* world) {
     
     if (!noEscape)
     {
-        std::list<Path> optimal = FindCatShortestPath(world);
+        std::vector<Path> optimal = FindCatShortestPath(world);
         if (optimal.size() > 0)
         {
-            return optimal.front().front(); //first position (next position) of the first path (the shortest)
+            return optimal[0].front(); //first position (next position) of the first path (the shortest)
         }
         
         noEscape = true;

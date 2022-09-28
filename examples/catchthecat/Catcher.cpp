@@ -12,23 +12,124 @@ Point2D Catcher::Move(World* world) {
 
     if (!noEscape)
     {
-        std::list<Path> optimal = FindCatShortestPath(world);
+        std::vector<Path> optimal = FindCatShortestPath(world);
         int sideOver2 = world->getWorldSideSize() / 2;
         Point2D cat = world->getCat();
 
-        //TODO: Ignore top left and bottom left corners
-        //TODO: Special case for top right and bottom right corners
-        //TODO: Prioritize paths not adjacent to existing walls
-
-        //create traps by blocking second shortest if cat is not adjacent to an exit
-        if (optimal.size() > 1 && (abs(cat.x) != sideOver2 - 1 && abs(cat.y) != sideOver2 - 1))
+        //return normal optimal path if the cat is adjacent to an exit space
+        if (optimal.size() > 0 && (abs(cat.x) == sideOver2 - 1 || abs(cat.y) == sideOver2 - 1))
         {
-            optimal.pop_front(); //read past shortest
-            return optimal.front().back(); //last position of the second path (the second shortest)
+            return optimal[0].back(); //last position of the first path (the shortest)
         }
-        else if (optimal.size() > 0)
+        if (optimal.size() == 2 && optimal[0].size() != optimal[1].size()) //block second shortest path if there is only the shortest path and the path that is one longer than the shortest
         {
-            return optimal.front().back(); //last position of the first path (the shortest)
+            return optimal[1].back();
+        }
+        if (optimal.size() >= 2)
+        {
+            //DONE: Ignore top left and bottom left corners
+            //DOING: Prioritize paths not adjacent to existing walls
+            //TODO: Special case for top right and bottom right corners, getting to (sideOver2 - 1, sideOver2 - 1) or (sideOver2 - 1, -sideOver2 + 1)
+                //means that there may be up to 3 exits adjacent, may be different spaces depending on which side the cat approaches from
+            //TODO: Handle cases where wall blocks access to an exit space in a way that you can only reach that exit space through other exit spaces,
+                //shouldn't waste time blocking off that blocked exit space
+            Point2D topLeft = Point2D(-sideOver2, -sideOver2);
+            Point2D bottomLeft = Point2D(-sideOver2, sideOver2);
+
+            //stores shortest path with least amount of adjacent walls
+                //7 should be impossible, placeholder so first valid path checked will always be made priority
+            std::pair<int, Path> priority = std::make_pair(-1, Path());
+
+            for (int i = optimal.size() - 1; i >= 0; i--)
+            {
+                //if path is the top or bottom left, it can be ignored because the cat would reach the exit by standing on 
+                //either space needed to reach those corners
+                //if (optimal[i].back() == topLeft || optimal[i].back() == bottomLeft)
+                //{
+                    //optimal.erase(optimal.begin() + i);
+                    //skip
+                //}
+                /*else*/ if (optimal[i].size() == optimal[0].size()) //if this path length is the same as the shortest, figure out if it is a priority
+                {
+                    //prioritize paths that aren't adjacent to existing exit walls, creates traps
+                    Point2D back = optimal[i].back();
+                    bool xMax = abs(back.x) == sideOver2;
+                    bool yMax = abs(back.y) == sideOver2;
+
+                    int p = 0;
+
+                    //sum adjacent spaces that are devoid of walls
+                    if (xMax && !yMax)
+                    {
+                        //check space above, changes between northeast and northwest, easier to just subtract or add 1 to y for this case
+                        if (!world->getContent(Point2D(back.x, back.y - 1)))
+                        {
+                            p++;
+                        }
+                        if (!world->getContent(Point2D(back.x, back.y + 1)))
+                        {
+                            p++;
+                        }
+
+                        if (back.x > 0 && !world->getContent(Point2D(back.x - 1, back.y))) //if on right side of map, check left
+                        {
+                            p++;
+                        }
+                        else if (back.x < 0 && !world->getContent(Point2D(back.x + 1, back.y))) //if on left side of map, check right
+                        {
+                            p++;
+                        }
+                    }
+                    else if (yMax && !xMax)
+                    {
+                        //check east and west
+                        if (!world->getContent(World::W(back)))
+                        {
+                            p++;
+                        }
+                        if (!world->getContent(World::E(back)))
+                        {
+                            p++;
+                        }
+
+                        if (back.y > 0) //if on lower side of map, northeast and northwest
+                        {
+                            if (!world->getContent(World::NE(back)))
+                            {
+                                p++;
+                            }
+                            if (!world->getContent(World::NW(back)))
+                            {
+                                p++;
+                            }
+                        }
+                        else if (back.y < 0) //if on upper side of map, check southeast and southwest
+                        {
+                            if (!world->getContent(World::SE(back)))
+                            {
+                                p++;
+                            }
+                            if (!world->getContent(World::SW(back)))
+                            {
+                                p++;
+                            }
+                        }
+                    }
+
+                    if (p > priority.first)
+                    {
+                        priority = std::make_pair(p, optimal[i]);
+                    }
+                }
+
+            }
+            
+            //return optimal[1].back(); //last position of the second path (the second shortest)
+            return priority.second.back(); //last position of the path with the highest priority
+        }
+        if(optimal.size() > 0) //catch in case the last ones fail and there is still a shortest path
+        {
+            return optimal[0].back(); //last position of the first path (the shortest)
         }
 
         noEscape = true;

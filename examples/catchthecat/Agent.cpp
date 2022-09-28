@@ -1,8 +1,8 @@
 #include "Agent.h"
 #include "World.h"
 
-std::list<Path> Agent::FindCatShortestPath(World* world) {
-	std::list<Path> solutions; //first will be shortest, last will be one less than shortest, used for catcher
+std::vector<Path> Agent::FindCatShortestPath(World* world) {
+	std::vector<Path> solutions; //first will be shortest, last will be one less than shortest, used for catcher
 
 	bool solutionFound = false;
 	Point2D catPos = world->getCat();
@@ -83,10 +83,10 @@ std::list<Path> Agent::FindCatShortestPath(World* world) {
 					solutions.push_back(solutionPath);
 					solutionPath.clear();
 				}
-
 				//if weight of next is null, it hasn't been explored yet, or if it is greater than the new path, we need to explore it
 				//and if cat can move to position, position should be explored.  Otherwise, we skip this position
-				if (((weights[next.x][next.y] == 0 && next != catPos) || weights[next.x][next.y] > current.weight + 1))
+				//if cat wins on this space, it does not need to be explored
+				else if (((weights[next.x][next.y] == 0 && next != catPos) || weights[next.x][next.y] > current.weight + 1))
 				{
 					weights[next.x][next.y] = current.weight + 1;
 					parents[next.x][next.y] = current.point;
