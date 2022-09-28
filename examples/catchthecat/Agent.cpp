@@ -2,6 +2,7 @@
 #include "World.h"
 
 std::vector<Path> Agent::FindCatShortestPath(World* world) {
+	std::cout << "-----------------------------------------------------------\n";
 	std::vector<Path> solutions; //first will be shortest, last will be one less than shortest, used for catcher
 
 	bool solutionFound = false;
@@ -81,6 +82,13 @@ std::vector<Path> Agent::FindCatShortestPath(World* world) {
 					{
 						solutionFound = true;
 					}
+					//print solution
+					std::cout << catPos << " -> ";
+					for (auto const& i : solutionPath)
+					{
+						std::cout << i << " -> ";
+					}
+					std::cout << std::endl;
 
 					solutions.push_back(solutionPath);
 					solutionPath.clear();
@@ -106,8 +114,8 @@ std::vector<Path> Agent::FindCatShortestPath(World* world) {
 				//std::cout << "Can not move to (" << next.x << ", " << next.y << ")\n\n";
 			}
 		}
-		//PrintMap(world, frontier, weights);
-		//PrintQueue(frontier);
+		PrintMap(world, frontier, weights);
+		PrintQueue(frontier);
 	}
 	//return empty path, no path to exit exists
 	return solutions;
@@ -142,7 +150,7 @@ void Agent::PrintMap(World* world, PriorityQueue pq, WeightMap wm)
 			{
 				bool inFrontier = false;
 				PriorityQueue temp = pq;
-				for (int i = 0; i < temp.size(); i++)
+				for (int i = temp.size() - 1; i >= 0 ; i--)
 				{
 					if (temp.top().point == current)
 					{

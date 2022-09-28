@@ -9,6 +9,7 @@ Point2D Cat::Move(World* world) {
         std::vector<Path> optimal = FindCatShortestPath(world);
         if (optimal.size() > 0)
         {
+
             return optimal[0].front(); //first position (next position) of the first path (the shortest)
         }
         
