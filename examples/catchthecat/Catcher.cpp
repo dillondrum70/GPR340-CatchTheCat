@@ -24,6 +24,51 @@ Point2D Catcher::Move(World* world) {
             return optimal[0].back(); //last position of the first path (the shortest)
         }
 
+        //if in next to corner with 4 adjacent exits and more than one is empty, block the corner space
+        //don't need to check if side size is 1
+        if (sideOver2 >= 2)
+        {
+            if (sideOver2 % 2 == 0)
+            {
+                //top right
+                //check if adjacent to 4 exit corner space, then check if more than one exit space on the other side is open
+                if (!world->getContent(Point2D((sideOver2 - 1), -(sideOver2 - 1))) && //check corner space isn't already covered
+                    (cat == Point2D((sideOver2 - 2), -(sideOver2 - 1)) || cat == Point2D(-(sideOver2 - 1), -(sideOver2 - 2))) && //check cat adjacent
+                    world->getContent(sideOver2, -sideOver2) + world->getContent((sideOver2 - 1), -sideOver2) + world->getContent(sideOver2, -(sideOver2 - 1)) + world->getContent(sideOver2, -(sideOver2 - 2)) <= 3) //check if more than 1 open wall
+                {
+                    return Point2D((sideOver2 - 1), -(sideOver2 - 1));
+                }
+                //bottom right
+                else if (!world->getContent(Point2D((sideOver2 - 1), (sideOver2 - 1))) && //check corner space isn't already covered
+                    (cat == Point2D((sideOver2 - 2), (sideOver2 - 1)) || cat == Point2D((sideOver2 - 1), (sideOver2 - 2))) && //check cat adjacent
+                    world->getContent(sideOver2, sideOver2) + world->getContent((sideOver2 - 1), sideOver2) + world->getContent(sideOver2, (sideOver2 - 1)) + world->getContent(sideOver2, (sideOver2 - 2)) <= 3) //check if more than 1 open wall
+                {
+                    return Point2D((sideOver2 - 1), (sideOver2 - 1));
+                }
+                
+            }
+            else
+            {
+                //odd
+                // top left
+                //check if adjacent to 4 exit corner space, then check if more than one exit space on the other side is open
+                if (!world->getContent(Point2D(-(sideOver2 - 1), -(sideOver2 - 1))) && //check corner space isn't already covered
+                    (cat == Point2D(-(sideOver2 - 2), -(sideOver2 - 1)) || cat == Point2D(-(sideOver2 - 1), -(sideOver2 - 2))) && //check cat adjacent
+                    world->getContent(-sideOver2, -sideOver2) + world->getContent(-(sideOver2 - 1), -sideOver2) + world->getContent(-sideOver2, -(sideOver2 - 1)) + world->getContent(-sideOver2, -(sideOver2 - 2)) <= 3) //check if more than 1 open wall
+                {
+                    return Point2D(-(sideOver2 - 1), -(sideOver2 - 1));
+                }
+                //bottom left
+                else if (!world->getContent(Point2D(-(sideOver2 - 1), (sideOver2 - 1))) && //check corner space isn't already covered
+                    (cat == Point2D(-(sideOver2 - 2), (sideOver2 - 1)) || cat == Point2D((sideOver2 - 1), (sideOver2 - 2))) && //check cat adjacent
+                    world->getContent(-sideOver2, sideOver2) + world->getContent(-(sideOver2 - 1), sideOver2) + world->getContent(-sideOver2, (sideOver2 - 1)) + world->getContent(-sideOver2, (sideOver2 - 2)) <= 3) //check if more than 1 open wall
+                {
+                    return Point2D(-(sideOver2 - 1), (sideOver2 - 1));
+                }
+            }
+        }
+        
+
         //block second shortest path if there is only the shortest path and the path that is one longer than the shortest
         if (optimal.size() == 2 && optimal[0].size() != optimal[1].size()) 
         {
