@@ -3,9 +3,9 @@
 #include <stdexcept>
 
 Point2D Cat::Move(World* world) {
-    
-    if (!noEscape)
-    {
+    //I have no way of resetting noEscape after game ends
+    //if (!noEscape)
+    //{
         std::vector<Path> optimal = FindCatShortestPath(world);
         if (optimal.size() > 0)
         {
@@ -13,8 +13,8 @@ Point2D Cat::Move(World* world) {
             return optimal[0].front(); //first position (next position) of the first path (the shortest)
         }
         
-        noEscape = true;
-    }
+        //noEscape = true;
+    //}
 
     //Won't be executed if there is an escape for the cat, it would return first
     auto pos = world->getCat();

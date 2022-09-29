@@ -26,8 +26,6 @@ World::World(Engine *pEngine, int size): GameObject(pEngine), sideSize(size){
 }
 
 void World::clearWorld() {
-    cat->Reset();
-    catcher->Reset();
   worldState.clear();
   worldState.resize(sideSize*sideSize);
   for(auto && i : worldState) i= false;

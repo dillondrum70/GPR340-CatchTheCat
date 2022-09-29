@@ -11,9 +11,9 @@ Point2D Catcher::Move(World* world) {
   }*/
     int sideOver2 = world->getWorldSideSize() / 2;
     Point2D cat = world->getCat();
-
-    if (!noEscape)
-    {
+    //I have no way of resetting noEscape after game ends
+    //if (!noEscape)
+    //{
         std::vector<Path> optimal = FindCatShortestPath(world);
         //std::cout << optimal.size() << std::endl;
 
@@ -57,8 +57,8 @@ Point2D Catcher::Move(World* world) {
             return optimal[0].back(); //last position of the first path (the shortest)
         }
 
-        noEscape = true;
-    }
+        //noEscape = true;
+    //}
 
     auto pos = world->getCat();
 

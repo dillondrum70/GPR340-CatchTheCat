@@ -34,12 +34,17 @@ typedef std::unordered_map<int, std::unordered_map<int, int>> WeightMap;
 typedef std::priority_queue<Node, std::vector<Node>, std::greater<Node>> PriorityQueue;
 
 class Agent {
+//protected:
+    //bool noEscape = false;
 public:
   explicit Agent()= default;;
   virtual Point2D Move(World*)=0;
 
   //returns empty Path() if no winning path exists, returns shortest path otherwise
   std::vector<Path> FindCatShortestPath(World* world);
+
+  //reset cat and catcher noEscape values on win
+  //void Reset() { noEscape = false; std::cout << "Reset\n"; }
 
   void PrintMap(World* world, PriorityQueue pq, WeightMap wm);
   void PrintQueue(PriorityQueue pq);
