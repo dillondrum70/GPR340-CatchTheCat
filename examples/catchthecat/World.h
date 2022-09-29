@@ -95,6 +95,7 @@ class World: GameObject {
   // check if cat can move to the position required
   bool catCanMoveToPosition(Point2D pos) const;
 
+  //returns true if cat wins on the given space
   bool catWinsOnSpace(Point2D point);
 };
 
