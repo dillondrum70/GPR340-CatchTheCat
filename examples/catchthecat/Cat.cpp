@@ -31,12 +31,12 @@ Point2D Cat::Move(World* world) {
 
         switch (adjacentPositions[rand]) {
         case 0:
-            if (world->catCanMoveToPosition(World::NE(pos, sideOver2)))
-                return World::NE(pos, sideOver2);
+            if (world->catCanMoveToPosition(World::NE(pos)))
+                return World::NE(pos);
             break;
         case 1:
-            if (world->catCanMoveToPosition(World::NW(pos, sideOver2)))
-                return World::NW(pos, sideOver2);
+            if (world->catCanMoveToPosition(World::NW(pos)))
+                return World::NW(pos);
             break;
         case 2:
             if (world->catCanMoveToPosition(World::E(pos)))
@@ -47,12 +47,12 @@ Point2D Cat::Move(World* world) {
                 return World::W(pos);
             break;
         case 4:
-            if (world->catCanMoveToPosition(World::SW(pos, sideOver2)))
-                return World::SW(pos, sideOver2);
+            if (world->catCanMoveToPosition(World::SW(pos)))
+                return World::SW(pos);
             break;
         case 5:
-            if (world->catCanMoveToPosition(World::SE(pos, sideOver2)))
-                return World::SE(pos, sideOver2);
+            if (world->catCanMoveToPosition(World::SE(pos)))
+                return World::SE(pos);
             break;
         default:
             throw "random out of range";

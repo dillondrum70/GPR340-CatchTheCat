@@ -32,11 +32,11 @@ std::vector<Path> Agent::FindCatShortestPath(World* world) {
 			{
 			case 0:
 				//std::cout << "NE : ";
-				next = World::NE(current.point, sideOver2);
+				next = World::NE(current.point);
 				break;
 			case 1:
 				//std::cout << "NW : ";
-				next = World::NW(current.point, sideOver2);
+				next = World::NW(current.point);
 				break;
 			case 2:
 				//std::cout << "W : ";
@@ -44,11 +44,11 @@ std::vector<Path> Agent::FindCatShortestPath(World* world) {
 				break;
 			case 3:
 				//std::cout << "SW : ";
-				next = World::SW(current.point, sideOver2);
+				next = World::SW(current.point);
 				break;
 			case 4:
 				//std::cout << "SE : ";
-				next = World::SE(current.point, sideOver2);
+				next = World::SE(current.point);
 				break;
 			case 5:
 				//std::cout << "E : ";
