@@ -34,14 +34,14 @@ Point2D Catcher::Move(World* world) {
                 //check if adjacent to 4 exit corner space, then check if more than one exit space on the other side is open
                 if (!world->getContent(Point2D((sideOver2 - 1), -(sideOver2 - 1))) && //check corner space isn't already covered
                     (cat == Point2D((sideOver2 - 2), -(sideOver2 - 1)) || cat == Point2D(-(sideOver2 - 1), -(sideOver2 - 2))) && //check cat adjacent
-                    world->getContent(sideOver2, -sideOver2) + world->getContent((sideOver2 - 1), -sideOver2) + world->getContent(sideOver2, -(sideOver2 - 1)) + world->getContent(sideOver2, -(sideOver2 - 2)) <= 3) //check if more than 1 open wall
+                    world->getContent(sideOver2, -sideOver2) + world->getContent((sideOver2 - 1), -sideOver2) + world->getContent(sideOver2, -(sideOver2 - 1)) + world->getContent(sideOver2, -(sideOver2 - 2)) < 3) //check if more than 1 open wall
                 {
                     return Point2D((sideOver2 - 1), -(sideOver2 - 1));
                 }
                 //bottom right
                 else if (!world->getContent(Point2D((sideOver2 - 1), (sideOver2 - 1))) && //check corner space isn't already covered
                     (cat == Point2D((sideOver2 - 2), (sideOver2 - 1)) || cat == Point2D((sideOver2 - 1), (sideOver2 - 2))) && //check cat adjacent
-                    world->getContent(sideOver2, sideOver2) + world->getContent((sideOver2 - 1), sideOver2) + world->getContent(sideOver2, (sideOver2 - 1)) + world->getContent(sideOver2, (sideOver2 - 2)) <= 3) //check if more than 1 open wall
+                    world->getContent(sideOver2, sideOver2) + world->getContent((sideOver2 - 1), sideOver2) + world->getContent(sideOver2, (sideOver2 - 1)) + world->getContent(sideOver2, (sideOver2 - 2)) < 3) //check if more than 1 open wall
                 {
                     return Point2D((sideOver2 - 1), (sideOver2 - 1));
                 }
@@ -54,14 +54,14 @@ Point2D Catcher::Move(World* world) {
                 //check if adjacent to 4 exit corner space, then check if more than one exit space on the other side is open
                 if (!world->getContent(Point2D(-(sideOver2 - 1), -(sideOver2 - 1))) && //check corner space isn't already covered
                     (cat == Point2D(-(sideOver2 - 2), -(sideOver2 - 1)) || cat == Point2D(-(sideOver2 - 1), -(sideOver2 - 2))) && //check cat adjacent
-                    world->getContent(-sideOver2, -sideOver2) + world->getContent(-(sideOver2 - 1), -sideOver2) + world->getContent(-sideOver2, -(sideOver2 - 1)) + world->getContent(-sideOver2, -(sideOver2 - 2)) <= 3) //check if more than 1 open wall
+                    world->getContent(-sideOver2, -sideOver2) + world->getContent(-(sideOver2 - 1), -sideOver2) + world->getContent(-sideOver2, -(sideOver2 - 1)) + world->getContent(-sideOver2, -(sideOver2 - 2)) < 3) //check if more than 1 open wall
                 {
                     return Point2D(-(sideOver2 - 1), -(sideOver2 - 1));
                 }
                 //bottom left
                 else if (!world->getContent(Point2D(-(sideOver2 - 1), (sideOver2 - 1))) && //check corner space isn't already covered
                     (cat == Point2D(-(sideOver2 - 2), (sideOver2 - 1)) || cat == Point2D((sideOver2 - 1), (sideOver2 - 2))) && //check cat adjacent
-                    world->getContent(-sideOver2, sideOver2) + world->getContent(-(sideOver2 - 1), sideOver2) + world->getContent(-sideOver2, (sideOver2 - 1)) + world->getContent(-sideOver2, (sideOver2 - 2)) <= 3) //check if more than 1 open wall
+                    world->getContent(-sideOver2, sideOver2) + world->getContent(-(sideOver2 - 1), sideOver2) + world->getContent(-sideOver2, (sideOver2 - 1)) + world->getContent(-sideOver2, (sideOver2 - 2)) < 3) //check if more than 1 open wall
                 {
                     return Point2D(-(sideOver2 - 1), (sideOver2 - 1));
                 }
