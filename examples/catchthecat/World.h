@@ -89,11 +89,11 @@ class World: GameObject {
 
   void step();
 
-  // check if catcher can move to the position required
-  bool catcherCanMoveToPosition(Point2D pos) const;
-
   // check if cat can move to the position required
   bool catCanMoveToPosition(Point2D pos) const;
+
+  // check if catcher can move to the position required
+  bool catcherCanMoveToPosition(Point2D pos) const;
 
   //returns true if cat wins on the given space
   bool catWinsOnSpace(Point2D point);
