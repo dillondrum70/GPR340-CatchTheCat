@@ -29,16 +29,19 @@ class World: GameObject {
 
   inline Node GetNode(const Point2D& point);
 
-  inline void GetNorth(const Point2D& point);
-  inline void GetEast(const Point2D& point);
-  inline void GetSouth(const Point2D& point);
-  inline void GetWest(const Point2D& point);
+  /*inline*/ bool GetNorth(const Point2D& point);
+  /*inline*/ bool GetEast(const Point2D& point);
+  /*inline*/ bool GetSouth(const Point2D& point);
+  /*inline*/ bool GetWest(const Point2D& point);
 
-  inline void SetNode(const Point2D& point, const Node& node);
-  inline void SetNorth(const Point2D& point, const bool& state);
-  inline void SetEast(const Point2D& point, const bool& state);
-  inline void SetSouth(const Point2D& point, const bool& state);
-  inline void SetWest(const Point2D& point, const bool& state);
+  int GetSize() const { return sideSize; }
+
+  //Can not be inline if they are to be used outside of World
+  /*inline*/ void SetNode(const Point2D& point, const Node& node);
+  /*inline*/ void SetNorth(const Point2D& point, const bool& state);
+  /*inline*/ void SetEast(const Point2D& point, const bool& state);
+  /*inline*/ void SetSouth(const Point2D& point, const bool& state);
+  /*inline*/ void SetWest(const Point2D& point, const bool& state);
 
   void Start() override;
   void OnGui(ImGuiContext *context) override;
