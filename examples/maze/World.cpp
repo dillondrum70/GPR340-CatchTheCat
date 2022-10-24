@@ -10,18 +10,41 @@ Node World::GetNode(const Point2D& point) {
 }
 void World::SetNode(const Point2D& point, const Node& node) {
   // todo implement this
+
+    int index = Point2DtoIndex(point);
+
+    data[index] = node.GetNorth();
+    data[index + 3] = node.GetEast();
+    data[index + (sideSize + 1) * 2] = node.GetSouth();
+    data[index + 1] = node.GetWest();
 }
 void World::SetNorth(const Point2D& point, const bool& state) {
   // todo implement this
+
+    int index = Point2DtoIndex(point);
+
+    data[index] = state;
 }
 void World::SetEast(const Point2D& point, const bool& state) {
   // todo implement this
+
+    int index = Point2DtoIndex(point);
+
+    data[index + 3] = state;
 }
 void World::SetSouth(const Point2D& point, const bool& state) {
   // todo implement this
+
+    int index = Point2DtoIndex(point);
+
+    data[index + (sideSize + 1) * 2] = state;
 }
 void World::SetWest(const Point2D& point, const bool& state) {
   // todo implement this
+
+    int index = Point2DtoIndex(point);
+
+    data[index + 1] = state;
 }
 
 void World::Start() {
@@ -83,7 +106,7 @@ void World::Clear() {
   data.clear();
   data.resize((size_t)(sideSize+1)*(sideSize+1)*2);
   for (int i = 0; i < data.size(); ++i) {
-    if(i%((sideSize+1)*2)==(sideSize+1)*2-2) // remove left elements on the last column
+    if (i % ((sideSize + 1) * 2) == (sideSize + 1) * 2 - 2) // remove left elements on the last column
       data[i] = false;
     else
       data[i] = true; // todo: remove the left elements from the bottom points
