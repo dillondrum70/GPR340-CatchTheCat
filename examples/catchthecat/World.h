@@ -45,17 +45,19 @@ private:
     // check if catcher won
     bool catcherWinVerification();
 
-public:
-    explicit World(Engine* pEngine, int size = 11);
-    explicit World(Engine* pEngine, int size, bool catTurn, Point2D cat, std::vector<bool> world);
+ public:
+  explicit World(Engine* pEngine, int size=11);
+  explicit World(Engine* pEngine, int mapSideSize, bool isCatTurn, Point2D catPos, std::vector<bool>  map);
 
-    // directions
-    static Point2D NE(const Point2D& p);
-    static Point2D NW(const Point2D& p);
-    static Point2D E(const Point2D& p);
-    static Point2D W(const Point2D& p);
-    static Point2D SE(const Point2D& p);
-    static Point2D SW(const Point2D& p);
+  ~World();
+
+  // directions
+  static Point2D NE(const Point2D &p);
+  static Point2D NW(const Point2D &p);
+  static Point2D E(const Point2D &p);
+  static Point2D W(const Point2D &p);
+  static Point2D SE(const Point2D &p);
+  static Point2D SW(const Point2D &p);
 
     // returns the cat position
     Point2D getCat();
@@ -95,8 +97,19 @@ public:
     // check if catcher can move to the position required
     bool catcherCanMoveToPosition(Point2D pos) const;
 
-    //returns true if cat wins on the given space
-    bool catWinsOnSpace(Point2D point);
+  //returns true if cat wins on the given space
+  bool catWinsOnSpace(Point2D point);
+
+  static std::vector<Point2D> neighbors(Point2D point){
+    std::vector<Point2D> n;
+    n.push_back(NE(point));
+    n.push_back(NW(point));
+    n.push_back(E(point));
+    n.push_back(W(point));
+    n.push_back(SW(point));
+    n.push_back(SE(point));
+    return n;
+  }
 };
 
 #endif  // WORLD_H
