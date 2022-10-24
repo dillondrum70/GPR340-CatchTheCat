@@ -2,7 +2,7 @@
 #include "World.h"
 
 #include <ctime>
-#include <random>
+#include <algorithm>
 
 void MazeGenerator::Generate(World* world) {
   // todo: use getnode or setnode to navigate over the world.
@@ -10,25 +10,29 @@ void MazeGenerator::Generate(World* world) {
 	int sideSize = world->GetSize();
 
 	visited = new bool[sideSize * sideSize]; 
-	
-	CarvePath(Point2D(0, 0), sideSize, world);
+	random = std::mt19937(std::time(nullptr));
+	CarvePath(Point2D(-sideSize / 2, -sideSize / 2), sideSize, world);
 }
 
 void MazeGenerator::CarvePath(const Point2D& vPoint, int vSideSize, World* pWorld)
 {
+	int sizeOver2 = vSideSize / 2;
 	//PrintMap(pWorld);
 
-	std::vector<int> directions = ShuffleDirections();
+	//std::vector<int> directions = ShuffleDirections();
+	int directions[4] = {0, 1, 2, 3};
+	
+	std::shuffle(&directions[0], &directions[4], random);
 	
 	for (int dir : directions)
 	{
 		const Point2D newPoint(vPoint.x + dx[dir], vPoint.y + dy[dir]);
 
-		if (newPoint.x >= 0 && newPoint.x < vSideSize &&
-			newPoint.y >= 0 && newPoint.y < vSideSize &&
-			!visited[(newPoint.y * vSideSize) + newPoint.x])
+		if (newPoint.x >= -sizeOver2 && newPoint.x < sizeOver2 + 1 &&
+			newPoint.y >= -sizeOver2 && newPoint.y < sizeOver2 + 1 &&
+			!visited[((newPoint.y + sizeOver2) * vSideSize) + (newPoint.x + sizeOver2)])
 		{
-			visited[(newPoint.y * vSideSize) + newPoint.x] = true;
+			visited[((newPoint.y + sizeOver2) * vSideSize) + (newPoint.x + sizeOver2)] = true;
 
 			switch (dir)
 			{

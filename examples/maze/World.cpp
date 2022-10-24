@@ -99,6 +99,7 @@ void World::OnGui(ImGuiContext *context){
   }
 
   if(ImGui::Button("Generate")){
+      Clear();
     generator.Generate(this);
   }
 }

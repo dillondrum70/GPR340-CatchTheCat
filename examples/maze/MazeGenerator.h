@@ -3,6 +3,7 @@
 #include "Point2D.h"
 
 #include <vector>
+#include <random>
 
 class World;
 
@@ -12,6 +13,7 @@ private:
 	const int dx[4] = { 0, 1, 0, -1 };
 	const int dy[4] = { -1, 0, 1, 0 }; //0, 0 is in the top right corner, North is negative
 	bool* visited = nullptr;//1d array representing visited grid spaces
+	std::mt19937 random;
 
 	void CarvePath(const Point2D& vPoint, int vSideSize, World* world);
 
