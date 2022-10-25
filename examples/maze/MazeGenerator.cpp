@@ -9,9 +9,16 @@ void MazeGenerator::Generate(World* world) {
 
 	int sideSize = world->GetSize();
 
-	visited = new bool[sideSize * sideSize]; 
+	visited = new bool[sideSize * sideSize];
+	visited[0] = true;
+	for (int i = 1; i < sideSize * sideSize; i++)
+	{
+		visited[i] = false;
+	}
 	random = std::mt19937(std::time(nullptr));
 	CarvePath(Point2D(-sideSize / 2, -sideSize / 2), sideSize, world);
+
+	delete visited;
 }
 
 void MazeGenerator::CarvePath(const Point2D& vPoint, int vSideSize, World* pWorld)
