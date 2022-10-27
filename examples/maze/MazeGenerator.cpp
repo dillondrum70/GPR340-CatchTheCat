@@ -1,5 +1,6 @@
 #include "MazeGenerator.h"
 #include "World.h"
+#include "Engine.h"
 
 #include <ctime>
 #include <algorithm>
@@ -82,18 +83,24 @@ void MazeGenerator::Prim(World* world)
 	int sideSize = world->GetSize();
 	int sizeOver2 = sideSize / 2;
 
-	random = std::mt19937(std::time(nullptr));
-	visited = std::vector<bool>(sideSize * sideSize, false);
-	
-	Point2D start(random() % sideSize - sizeOver2, random() % sideSize - sizeOver2);
-	std::vector<Point2D> frontier;
+	if (!inProcess)
+	{
+		inProcess = true;
+		random = std::mt19937(std::time(nullptr));
+		visited.clear();
+		visited = std::vector<bool>(sideSize * sideSize, false);
 
-	frontier.push_back(start);
+		Point2D start(random() % sideSize - sizeOver2, random() % sideSize - sizeOver2);
+		frontier.clear();
+
+		frontier.push_back(start);
+	}
+	
 
 	while (!frontier.empty())
 	{
 		
-		//Get current point from frontier randomly
+		/*//Get current point from frontier randomly
 		int randIndex = random() % frontier.size();
 		Point2D current = frontier[randIndex];
 		frontier.erase(frontier.begin() + randIndex);
@@ -150,7 +157,96 @@ void MazeGenerator::Prim(World* world)
 			}
 		}
 
+		//PrintMap(world);*/
+		PrimStep(world);
+	}
+
+	inProcess = false;
+}
+
+void MazeGenerator::PrimStep(World* world)
+{
+	int sideSize = world->GetSize();
+	int sizeOver2 = sideSize / 2;
+
+	if (!inProcess)
+	{
+		inProcess = true;
+		random = std::mt19937(std::time(nullptr));
+		visited.clear();
+		visited = std::vector<bool>(sideSize * sideSize, false);
+
+		Point2D start(random() % sideSize - sizeOver2, random() % sideSize - sizeOver2);
+		frontier.clear();
+
+		frontier.push_back(start);
+	}
+
+	if (!frontier.empty())
+	{
+
+		//Get current point from frontier randomly
+		int randIndex = random() % frontier.size();
+		Point2D current = frontier[randIndex];
+		frontier.erase(frontier.begin() + randIndex);
+
+		if (visited[((current.y + sizeOver2) * sideSize) + (current.x + sizeOver2)])
+		{
+			return;
+		}
+
+		visited[((current.y + sizeOver2) * sideSize) + (current.x + sizeOver2)] = true;
+
+		std::vector<int> nextCarves; //vector of directions that could be carved to from current
+
+		//Add neighbors to proper collections if they are valid
+		for (int i = 0; i < 4; i++)
+		{
+			Point2D next = Point2D(current.x + dx[i], current.y + dy[i]);
+
+			if (next.x >= -sizeOver2 && next.x < sizeOver2 + 1 &&
+				next.y >= -sizeOver2 && next.y < sizeOver2 + 1)
+			{
+				if (!visited[((next.y + sizeOver2) * sideSize) + (next.x + sizeOver2)])
+				{
+					//if not visited, add to frontier
+					frontier.push_back(next);
+				}
+				else
+				{
+					//if visited, log as possible wall to carve out
+					nextCarves.push_back(i);
+				}
+			}
+		}
+
+		//randomly choose which wall to carve
+		if (nextCarves.size() > 0)
+		{
+			switch (nextCarves[random() % nextCarves.size()])
+			{
+			case 0:
+				world->SetNorth(current, false);
+				break;
+			case 1:
+				world->SetEast(current, false);
+				break;
+			case 2:
+				world->SetSouth(current, false);
+				break;
+			case 3:
+				world->SetWest(current, false);
+				break;
+			default:
+				throw("Out of Range");
+			}
+		}
+
 		//PrintMap(world);
+	}
+	else
+	{
+		inProcess = false;
 	}
 }
 

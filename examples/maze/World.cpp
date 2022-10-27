@@ -115,14 +115,31 @@ void World::OnGui(ImGuiContext *context){
   int newAlgorithm = generator.GetAlgorithm();
 
   if (ImGui::SliderInt("Algorithm", &newAlgorithm, 0, Algorithms::TOTAL_ALGORITHMS - 1)) {
-      generator.SetAlgorithm(newAlgorithm);
-      Clear();
+      
+      if (!generator.GetInProcess())
+      {
+          generator.SetAlgorithm(newAlgorithm);
+      }
   }
 
   if (ImGui::Button("Run"))
   {
-      Clear();
+      if (!generator.GetInProcess())
+        Clear();
       generator.GenerateMaze(this);
+  }
+
+  if (ImGui::Button("Step"))
+  {
+      if (!generator.GetInProcess())
+        Clear();
+
+      if (generator.GetAlgorithm() == Algorithms::RECURSIVE_BACKTRACK)
+      {
+
+      }
+      else if (generator.GetAlgorithm() == Algorithms::PRIM)
+        generator.PrimStep(this);
   }
 }
 

@@ -6,6 +6,7 @@
 #include <random>
 
 class World;
+class Engine;
 
 enum Algorithms
 {
@@ -22,6 +23,8 @@ private:
 	const int dy[4] = { -1, 0, 1, 0 }; //0, 0 is in the top right corner, North is negative
 	std::vector<bool> visited;//1d array representing visited grid spaces
 	std::mt19937 random;	//Random number generator
+
+	std::vector<Point2D> frontier;
 
 	int currentAlgorithm = RECURSIVE_BACKTRACK;
 
@@ -47,6 +50,7 @@ private:
 	void RecursiveBacktrack(World * world);
 
 	void Prim(World* world);
+	void PrimStep(World* world);
 };
 
 #endif
