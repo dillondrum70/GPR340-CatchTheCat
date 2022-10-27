@@ -10,9 +10,10 @@ class World;
 class MazeGenerator {
 private:
 	//N = 0, E = 1, S = 2, W = 3
+	int directions[4] = { 0, 1, 2, 3 };
 	const int dx[4] = { 0, 1, 0, -1 };
 	const int dy[4] = { -1, 0, 1, 0 }; //0, 0 is in the top right corner, North is negative
-	bool* visited = nullptr;//1d array representing visited grid spaces
+	std::vector<bool> visited;//1d array representing visited grid spaces
 	std::mt19937 random;
 
 	void CarvePath(const Point2D& vPoint, int vSideSize, World* world);
@@ -23,7 +24,9 @@ private:
  public:
   // todo: in order to step work properly, you have to store your current
   // exploration status in the MazeGenerator members
-  void Generate(World * world);
+  void RecursiveBacktrack(World * world);
+
+  void Prim(World* world);
 };
 
 #endif

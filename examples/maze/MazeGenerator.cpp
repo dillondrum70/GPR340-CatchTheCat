@@ -4,12 +4,12 @@
 #include <ctime>
 #include <algorithm>
 
-void MazeGenerator::Generate(World* world) {
+void MazeGenerator::RecursiveBacktrack(World* world) {
   // todo: use getnode or setnode to navigate over the world.
 
 	int sideSize = world->GetSize();
 
-	visited = new bool[sideSize * sideSize];
+	visited = std::vector<bool>(sideSize * sideSize);
 	visited[0] = true;
 	for (int i = 1; i < sideSize * sideSize; i++)
 	{
@@ -17,8 +17,6 @@ void MazeGenerator::Generate(World* world) {
 	}
 	random = std::mt19937(std::time(nullptr));
 	CarvePath(Point2D(-sideSize / 2, -sideSize / 2), sideSize, world);
-
-	delete visited;
 }
 
 void MazeGenerator::CarvePath(const Point2D& vPoint, int vSideSize, World* pWorld)
@@ -27,7 +25,6 @@ void MazeGenerator::CarvePath(const Point2D& vPoint, int vSideSize, World* pWorl
 	//PrintMap(pWorld);
 
 	//std::vector<int> directions = ShuffleDirections();
-	int directions[4] = {0, 1, 2, 3};
 	
 	std::shuffle(&directions[0], &directions[4], random);
 	
@@ -66,7 +63,84 @@ void MazeGenerator::CarvePath(const Point2D& vPoint, int vSideSize, World* pWorl
 	}
 }
 
-std::vector<int> MazeGenerator::ShuffleDirections()
+void MazeGenerator::Prim(World* world)
+{
+	int sideSize = world->GetSize();
+	int sizeOver2 = sideSize / 2;
+
+	random = std::mt19937(std::time(nullptr));
+	visited = std::vector<bool>(sideSize * sideSize);
+	
+	Point2D start(random() % sideSize - sizeOver2, random() % sideSize - sizeOver2);
+	std::vector<Point2D> frontier;
+
+	frontier.push_back(start);
+
+	while (!frontier.empty())
+	{
+		
+		//Get current point from frontier randomly
+		int randIndex = random() % frontier.size();
+		Point2D current = frontier[randIndex];
+		frontier.erase(frontier.begin() + randIndex);
+
+		if (visited[((current.y + sizeOver2) * sideSize) + (current.x + sizeOver2)])
+		{
+			continue;
+		}
+				
+		visited[((current.y + sizeOver2) * sideSize) + (current.x + sizeOver2)] = true;
+
+		std::vector<int> nextCarves; //vector of directions that could be carved to from current
+
+		//Add neighbors to proper collections if they are valid
+		for (int i = 0; i < 4; i++)
+		{
+			Point2D next = Point2D(current.x + dx[i], current.y + dy[i]);
+
+			if (next.x >= -sizeOver2 && next.x < sizeOver2 + 1 &&
+				next.y >= -sizeOver2 && next.y < sizeOver2 + 1)
+			{
+				if (!visited[((next.y + sizeOver2) * sideSize) + (next.x + sizeOver2)])
+				{
+					//if not visited, add to frontier
+					frontier.push_back(next);
+				}
+				else
+				{
+					//if visited, log as possible wall to carve out
+					nextCarves.push_back(i);
+				}
+			}
+		}
+		
+		//randomly choose which wall to carve
+		if (nextCarves.size() > 0)
+		{
+			switch (nextCarves[random() % nextCarves.size()])
+			{
+			case 0:
+				world->SetNorth(current, false);
+				break;
+			case 1:
+				world->SetEast(current, false);
+				break;
+			case 2:
+				world->SetSouth(current, false);
+				break;
+			case 3:
+				world->SetWest(current, false);
+				break;
+			default:
+				throw("Out of Range");
+			}
+		}
+
+		//PrintMap(world);
+	}
+}
+
+/*std::vector<int> MazeGenerator::ShuffleDirections()
 {
 	std::mt19937 random(std::time(nullptr)); //initialize mersenne twister with seed
 
@@ -81,7 +155,7 @@ std::vector<int> MazeGenerator::ShuffleDirections()
 	}
 
 	return shuffled;
-}
+}*/
 
 void MazeGenerator::PrintMap(World* pWorld)
 {

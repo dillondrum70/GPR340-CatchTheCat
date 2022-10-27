@@ -98,9 +98,14 @@ void World::OnGui(ImGuiContext *context){
     }
   }
 
-  if(ImGui::Button("Generate")){
+  if(ImGui::Button("Recursive Backtracking")){
       Clear();
-    generator.Generate(this);
+    generator.RecursiveBacktrack(this);
+  }
+
+  if (ImGui::Button("Prim's Algorithm")) {
+      Clear();
+      generator.Prim(this);
   }
 }
 
