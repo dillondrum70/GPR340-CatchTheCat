@@ -90,12 +90,12 @@ void World::OnGui(ImGuiContext *context){
               ImGui::GetIO().Framerate);
   static auto newSize = sideSize;
 
-  if(ImGui::SliderInt("Side Size", &newSize, 5, 29)) {
-    newSize = (newSize/4)*4 + 1;
-    if(newSize!=sideSize) {
-      sideSize = newSize;
-      Clear();
-    }
+  if(!generator.GetInProcess() && ImGui::SliderInt("Side Size", &newSize, 5, 29)) {
+      newSize = (newSize / 4) * 4 + 1;
+      if (newSize != sideSize) {
+          sideSize = newSize;
+          Clear();
+      }
   }
 
   /*if (ImGui::Button("Recursive Backtracking")) {
@@ -138,11 +138,26 @@ void World::OnGui(ImGuiContext *context){
       }
   }
 
+  float newMaxTimer = maxTime;
+
+  /*if (ImGui::SliderFloat("Step Time", &newMaxTimer, 0.01, 5))
+  {
+      maxTime = newMaxTimer;
+  }*/
+
+  ImGui::Text("Timer: %.1f", timer);
+
   if (ImGui::Button("Run"))
   {
       if (!generator.GetInProcess())
         Clear();
-      generator.GenerateMaze(this);
+      //generator.GenerateMaze(this);
+      run = true;
+  }
+
+  if (ImGui::Button("Pause"))
+  {
+      run = false;
   }
 
   if (ImGui::Button("Step"))
@@ -179,7 +194,15 @@ void World::OnDraw(SDL_Renderer* renderer){
 }
 
 void World::Update(float deltaTime){
-
+    if (run)
+    {
+        if (timer <= 0)
+        {
+            generator.StepMaze(this);
+            timer = maxTime;
+        }
+        timer -= deltaTime;
+    }
 }
 
 void World::Clear() {

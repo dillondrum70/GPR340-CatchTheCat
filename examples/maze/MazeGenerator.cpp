@@ -20,6 +20,21 @@ void MazeGenerator::GenerateMaze(World* world)
 	}
 }
 
+void MazeGenerator::StepMaze(World* world)
+{
+	switch (currentAlgorithm)
+	{
+	case RECURSIVE_BACKTRACK:
+		RecursiveStep(world);
+		break;
+	case PRIM:
+		PrimStep(world);
+		break;
+	default:
+		throw("Algorithm Does Not Exist");
+	}
+}
+
 void MazeGenerator::InitRecursiveBacktrack(World* world)
 {
 	int sideSize = world->GetSize();
@@ -51,6 +66,7 @@ void MazeGenerator::RecursiveBacktrack(World* world) {
 	}
 
 	inProcess = false;
+	world->StopRun();
 }
 
 void MazeGenerator::RecursiveStep(World* pWorld)
@@ -122,6 +138,7 @@ void MazeGenerator::RecursiveStep(World* pWorld)
 	else
 	{
 		inProcess = false;
+		pWorld->StopRun();
 	}
 }
 
@@ -157,6 +174,7 @@ void MazeGenerator::Prim(World* world)
 	}
 
 	inProcess = false;
+	world->StopRun();
 }
 
 void MazeGenerator::PrimStep(World* world)
@@ -234,6 +252,7 @@ void MazeGenerator::PrimStep(World* world)
 	else
 	{
 		inProcess = false;
+		world->StopRun();
 	}
 }
 
@@ -267,7 +286,7 @@ void MazeGenerator::PrintMap(World* pWorld)
 			std::cout << ".";
 			if (pWorld->GetNorth(Point2D(j, i)))
 			{
-				std::cout << "-";
+				std::cout << "=";
 			}
 			else
 			{
@@ -307,7 +326,7 @@ void MazeGenerator::PrintMap(World* pWorld)
 		std::cout << ".";
 		if (pWorld->GetSouth(Point2D(j, pWorld->GetSize() - 1)))
 		{
-			std::cout << "-";
+			std::cout << "=";
 		}
 		else
 		{

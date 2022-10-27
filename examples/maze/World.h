@@ -11,6 +11,11 @@ class World: GameObject {
  private:
   int sideSize;
 
+  float timer;
+  float maxTime = .01;
+
+  bool run;
+
   MazeGenerator generator;
 
   // .=
@@ -47,6 +52,8 @@ class World: GameObject {
   void OnGui(ImGuiContext *context) override;
   void OnDraw(SDL_Renderer* renderer) override;
   void Update(float deltaTime) override;
+
+  void StopRun() { run = false; }
 
   void Clear();
 };

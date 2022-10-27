@@ -51,6 +51,7 @@ private:
   // todo: in order to step work properly, you have to store your current
   // exploration status in the MazeGenerator members
 	 void GenerateMaze(World* world);
+	 void StepMaze(World* world);
 
 	 void InitRecursiveBacktrack(World* world);
 	void RecursiveBacktrack(World * world);
