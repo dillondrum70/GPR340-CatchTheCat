@@ -4,19 +4,33 @@
 #include <ctime>
 #include <algorithm>
 
+void MazeGenerator::GenerateMaze(World* world)
+{
+	switch (currentAlgorithm)
+	{
+	case RECURSIVE_BACKTRACK:
+		RecursiveBacktrack(world);
+		break;
+	case PRIM:
+		Prim(world);
+		break;
+	default:
+		throw("Algorithm Does Not Exist");
+	}
+}
+
 void MazeGenerator::RecursiveBacktrack(World* world) {
   // todo: use getnode or setnode to navigate over the world.
 
 	int sideSize = world->GetSize();
 
-	visited = std::vector<bool>(sideSize * sideSize);
+	visited = std::vector<bool>(sideSize * sideSize, false);
 	visited[0] = true;
-	for (int i = 1; i < sideSize * sideSize; i++)
-	{
-		visited[i] = false;
-	}
+
 	random = std::mt19937(std::time(nullptr));
 	CarvePath(Point2D(-sideSize / 2, -sideSize / 2), sideSize, world);
+
+	sideSize = 0;
 }
 
 void MazeGenerator::CarvePath(const Point2D& vPoint, int vSideSize, World* pWorld)
@@ -69,7 +83,7 @@ void MazeGenerator::Prim(World* world)
 	int sizeOver2 = sideSize / 2;
 
 	random = std::mt19937(std::time(nullptr));
-	visited = std::vector<bool>(sideSize * sideSize);
+	visited = std::vector<bool>(sideSize * sideSize, false);
 	
 	Point2D start(random() % sideSize - sizeOver2, random() % sideSize - sizeOver2);
 	std::vector<Point2D> frontier;

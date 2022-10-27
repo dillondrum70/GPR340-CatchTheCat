@@ -98,14 +98,31 @@ void World::OnGui(ImGuiContext *context){
     }
   }
 
-  if(ImGui::Button("Recursive Backtracking")){
+  /*if (ImGui::Button("Recursive Backtracking")) {
       Clear();
-    generator.RecursiveBacktrack(this);
+    //generator.RecursiveBacktrack(this);
+      if(!generator.GetInProcess())
+        generator.SetAlgorithm(Algorithms::RECURSIVE_BACKTRACK);
   }
 
   if (ImGui::Button("Prim's Algorithm")) {
       Clear();
-      generator.Prim(this);
+      //generator.Prim(this);
+      if(!generator.GetInProcess())
+        generator.SetAlgorithm(Algorithms::PRIM);
+  }*/
+
+  int newAlgorithm = generator.GetAlgorithm();
+
+  if (ImGui::SliderInt("Algorithm", &newAlgorithm, 0, Algorithms::TOTAL_ALGORITHMS - 1)) {
+      generator.SetAlgorithm(newAlgorithm);
+      Clear();
+  }
+
+  if (ImGui::Button("Run"))
+  {
+      Clear();
+      generator.GenerateMaze(this);
   }
 }
 
