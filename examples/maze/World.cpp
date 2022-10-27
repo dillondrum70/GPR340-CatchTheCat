@@ -114,6 +114,22 @@ void World::OnGui(ImGuiContext *context){
 
   int newAlgorithm = generator.GetAlgorithm();
 
+  char* algorithmName;
+  switch (generator.GetAlgorithm())
+  {
+  case 0:
+      algorithmName = "Recursive Backtracking";
+      break;
+  case 1:
+      algorithmName = "Prim's Algorithm";
+      break;
+  default:
+      throw("Algorithm Does Not Exist");
+  }
+
+  ImGui::Text("Current Algorithm: ");
+  ImGui::Text(algorithmName);
+
   if (ImGui::SliderInt("Algorithm", &newAlgorithm, 0, Algorithms::TOTAL_ALGORITHMS - 1)) {
       
       if (!generator.GetInProcess())
@@ -135,9 +151,7 @@ void World::OnGui(ImGuiContext *context){
         Clear();
 
       if (generator.GetAlgorithm() == Algorithms::RECURSIVE_BACKTRACK)
-      {
-
-      }
+          generator.RecursiveStep(this);
       else if (generator.GetAlgorithm() == Algorithms::PRIM)
         generator.PrimStep(this);
   }
