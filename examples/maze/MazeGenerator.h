@@ -44,6 +44,8 @@ private:
  public:
 	 bool GetInProcess() { return inProcess; }
 	 int GetAlgorithm() { return currentAlgorithm; }
+	 std::vector<Point2D> GetFrontier() { return frontier; }
+	 std::list<std::pair<Point2D, std::vector<int>>> GetStack() { return stack; }
 
 	 //% total: ensures it is in the range of accepted algorithms
 	 void SetAlgorithm(int vAlgorithm) { currentAlgorithm = vAlgorithm % TOTAL_ALGORITHMS; }

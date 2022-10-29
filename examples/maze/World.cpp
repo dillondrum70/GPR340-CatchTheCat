@@ -191,6 +191,41 @@ void World::OnDraw(SDL_Renderer* renderer){
     if(data[i+1])
       SDL_RenderDrawLine(renderer,(int) pos.x,(int) pos.y,(int) pos.x,(int) (pos.y + linesize));
   }
+
+  if (generator.GetAlgorithm() == Algorithms::PRIM)
+  {
+      std::vector<Point2D> frontier = generator.GetFrontier();
+      for (int i = 0; i < frontier.size(); i++)
+      {
+          Vector2 pos = Vector2(frontier[i].x + sideSize / 2, frontier[i].y + sideSize / 2);
+          pos *= linesize;
+          pos += displacement;
+
+          SDL_Rect rect = { (int)pos.x , (int)pos.y , (int)linesize , (int)linesize };
+          SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
+
+          SDL_RenderFillRect(renderer, &rect);
+      }
+  }
+  else if (generator.GetAlgorithm() == Algorithms::RECURSIVE_BACKTRACK)
+  {
+      std::list<std::pair<Point2D, std::vector<int>>> stack = generator.GetStack();
+      for (std::pair<Point2D, std::vector<int>> pair : stack)
+      {
+          Vector2 pos = Vector2(pair.first.x + sideSize / 2, pair.first.y + sideSize / 2);
+          pos *= linesize;
+          pos += displacement;
+
+          SDL_Rect rect = { (int)pos.x , (int)pos.y , (int)linesize , (int)linesize };
+          SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
+          if (pair == stack.front())
+          {
+              SDL_SetRenderDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
+          }
+
+          SDL_RenderFillRect(renderer, &rect);
+      }
+  }
 }
 
 void World::Update(float deltaTime){
