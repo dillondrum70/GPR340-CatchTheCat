@@ -1,9 +1,11 @@
 #include "Manager.h"
 #include "generators/RandomGenerator.h"
+#include "generators/SimplexGenerator.h"
 Manager::Manager(Engine* engine, int size)
     : GameObject(engine) {
   // todo: add your generator here
   generators.push_back(new RandomScenarioGenerator());
+  generators.push_back(new SimplexGenerator());
 }
 
 void Manager::SetPixels(std::vector<Color32> &input) {
