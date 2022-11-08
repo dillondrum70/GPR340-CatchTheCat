@@ -3,8 +3,8 @@
 #include <cmath>
 #include <iostream>
 
-const double F2 = 0.5 * (std::sqrt(3.0) - 1.0);
-const double G2 = (3.0 - std::sqrt(3.0)) / 6.0;
+const double F2 = 0.5 * (std::sqrt(3.0) - 1.0); //F in 2nd dimension
+const double G2 = (3.0 - std::sqrt(3.0)) / 6.0; //G in 2nd dimension   
 
 std::vector<Color32> SimplexGenerator::Generate(int sideSize) {
     //https://en.wikipedia.org/wiki/Simplex_noise
@@ -49,6 +49,48 @@ std::vector<Color32> SimplexGenerator::Generate(int sideSize) {
 double SimplexGenerator::SimplexNoise(float xIn, float yIn)
 {
     //Skew
+    int sum = xIn + yIn;
+    int dx = xIn + (sum * F2);
+    int dy = yIn + (sum * F2);
+
+    //Simplicial Subdivision
+    //Corner 0 = (0, 0)
+    double corner1X = (dx > dy) ? 1 : 0;
+    double corner1Y = (dx <= dy) ? 0 : 1;
+    //Corner 2 = (1, 1)
+
+    //Gradient Subsection
+    int hashGradIndex0 = (int)noiseClass.samples[dx + noiseClass.samples[dy]] % 12;
+    int hashGradIndex1 = (int)noiseClass.samples[dx + corner1X + noiseClass.samples[dy + corner1Y]] % 12;
+    int hashGradIndex2 = (int)noiseClass.samples[dx + 1 + noiseClass.samples[dy + 1]] % 12;
+
+    //Kernel Summation
+    sum = dx + dy;
+    double x0 = xIn - (dx - (sum * G2));
+    double y0 = yIn - (dy - (sum * G2));
+
+    double x1 = x0 - corner1X + G2;
+    double y1 = x0 - corner1Y + G2;
+
+    double x2 = x0 - 1.0 + ( G2);
+    double y2 = x0 - 1.0 + ( G2);
+    /*double x0 = xIn - (dx - (sum * G2));
+    double y0 = yIn - (dy - (sum * G2));
+
+    double x1 = xIn - (dx + corner1X - (sum * G2));
+    double y1 = yIn - (dy + corner1Y - (sum * G2));
+
+    double x2 = xIn - (dx + 1.0 - (sum * G2));
+    double y2 = yIn - (dy + 1.0 - (sum * G2));*/
+
+   //Final calculation, 0 for each vertex of the simplex if calculated value is less than 0
+    double val0 = std::max(0.0, std::pow(std::max(0., .6 - Vector2(x0, y0).sqrMagnitude()), 4) * ((dx * grad[hashGradIndex0][0]) + (dy * grad[hashGradIndex0][1])));
+    double val1 = std::max(0.0, std::pow(std::max(0., .6 - Vector2(x1, y1).sqrMagnitude()), 4) * ((dx * grad[hashGradIndex1][0]) + (dy * grad[hashGradIndex1][1])));
+    double val2 = std::max(0.0, std::pow(std::max(0., .6 - Vector2(x2, y2).sqrMagnitude()), 4) * ((dx * grad[hashGradIndex2][0]) + (dy * grad[hashGradIndex2][1])));
+
+    return 2.0 * (val0 + val1 + val2);
+
+    /*//Skew
     double F = (std::sqrt(3) - 1) / 2;
     int sum = xIn + yIn;
     int dx = xIn + (sum * F);
@@ -110,8 +152,7 @@ double SimplexGenerator::SimplexNoise(float xIn, float yIn)
         val2 = std::pow(t2, 4) * ((grad[hashGradIndex2][0] * x2) + (grad[hashGradIndex2][1] * y2));
     }
 
-    return 20.0 * (val0 + val1 + val2);
-    //return std::pow(std::max(0., .6 - Vector2(x1, y1).sqrMagnitude()), 4) * ((dx * gradX) + (dy * gradY));
+    return 20.0 * (val0 + val1 + val2);*/
 }
 
 std::string SimplexGenerator::GetName() { return "Simplex"; }
