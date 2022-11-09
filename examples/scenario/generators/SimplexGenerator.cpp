@@ -49,9 +49,9 @@ std::vector<Color32> SimplexGenerator::Generate(int sideSize) {
 double SimplexGenerator::SimplexNoise(float xIn, float yIn)
 {
     //Skew
-    int sum = xIn + yIn;
-    int dx = xIn + (sum * F2);
-    int dy = yIn + (sum * F2);
+    int sum = (xIn + yIn) * F2;
+    int dx = std::floor(xIn + sum);
+    int dy = std::floor(yIn + sum);
 
     //Simplicial Subdivision
     //Corner 0 = (0, 0)
@@ -88,7 +88,7 @@ double SimplexGenerator::SimplexNoise(float xIn, float yIn)
     double val1 = std::max(0.0, std::pow(std::max(0., .6 - Vector2(x1, y1).sqrMagnitude()), 4) * ((dx * grad[hashGradIndex1][0]) + (dy * grad[hashGradIndex1][1])));
     double val2 = std::max(0.0, std::pow(std::max(0., .6 - Vector2(x2, y2).sqrMagnitude()), 4) * ((dx * grad[hashGradIndex2][0]) + (dy * grad[hashGradIndex2][1])));
 
-    return 2.0 * (val0 + val1 + val2);
+    return (val0 + val1 + val2);
 
     /*//Skew
     double F = (std::sqrt(3) - 1) / 2;
