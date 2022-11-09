@@ -11,7 +11,7 @@ private:
 					{1,0,1},{-1,0,1},{1,0,-1},{-1,0,-1},
 					{0,1,1},{0,-1,1},{0,1,-1},{0,-1,-1} };
 public:
-	std::vector<Color32> Generate(int sideSize) override;
+	std::vector<Color32> Generate(int sideSize, float displacement = 0) override;
 	double SimplexNoise(float xIn, float yIn);
 	std::string GetName() override;
 };

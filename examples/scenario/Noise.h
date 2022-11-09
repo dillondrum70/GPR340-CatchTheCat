@@ -13,7 +13,6 @@ class Noise {
  private:
   std::mt19937_64 generator;
   std::uniform_real_distribution<double> distribution;
-  std::vector<double> samples;
 
   inline constexpr double Fade(const double t) noexcept
   {

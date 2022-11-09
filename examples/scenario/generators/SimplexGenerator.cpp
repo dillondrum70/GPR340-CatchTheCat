@@ -6,7 +6,7 @@
 const double F2 = 0.5 * (std::sqrt(3.0) - 1.0); //F in 2nd dimension
 const double G2 = (3.0 - std::sqrt(3.0)) / 6.0; //G in 2nd dimension   
 
-std::vector<Color32> SimplexGenerator::Generate(int sideSize) {
+std::vector<Color32> SimplexGenerator::Generate(int sideSize, float displacement) {
     //https://en.wikipedia.org/wiki/Simplex_noise
     //Coordinate Skew
         //sum = (x + y)
@@ -50,8 +50,8 @@ double SimplexGenerator::SimplexNoise(float xIn, float yIn)
 {
     //Skew
     int sum = (xIn + yIn) * F2;
-    int dx = std::floor(xIn + sum);
-    int dy = std::floor(yIn + sum);
+    int dx = (int)std::floor(xIn + sum);
+    int dy = (int)std::floor(yIn + sum);
 
     //Simplicial Subdivision
     //Corner 0 = (0, 0)
