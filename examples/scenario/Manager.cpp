@@ -121,6 +121,7 @@ void Manager::OnGui(ImGuiContext* context) {
   if(ImGui::Button("Pause")) {
     isSimulating = false;
   }
+  ImGui::End();
 }
 void Manager::Update(float deltaTime) {
   if(isSimulating) {
