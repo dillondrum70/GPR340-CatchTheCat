@@ -6,14 +6,16 @@
 #include "generators/SimplexGenerator.h"
 Manager::Manager(Engine* engine, int size)
     : GameObject(engine) {
-    generators.push_back(new SimplexGenerator());
     generators.push_back(new RandomScenarioGenerator());
+    generators.push_back(new SimplexGenerator());
 }
 
 void Manager::SetPixels(std::vector<Color32> &input) {
   Uint32* output = nullptr;
   int pitch = 0;
   uint32_t format;
+
+  double sqrt2 = std::sqrt(2);
 
   // Get the size of the texture.
   int w, h;
@@ -37,6 +39,47 @@ void Manager::SetPixels(std::vector<Color32> &input) {
       auto color = input[line * w + column].GetPacked();
       // Before setting the color, we need to know where we have to place it.
       Uint32 pixelPosition = (line * w + column);
+
+      color = color % 256;
+      
+      double nx = (2 * ((double)column / (double)w)) - 1;
+      double ny = (2 * ((double)line / (double)h)) - 1;
+      //double nx = ((double)column / (double)w) * 255.0;
+      //double ny = ((double)line / (double)h) * 255.0;
+      double d = std::min(1.0, ((nx * nx) + (ny * ny)) / sqrt2);
+      //double d = ((nx * nx) + (ny * ny)) / sqrt2;
+      //color = std::clamp((int)d * 255, 0, 255);
+      //color = (1 - d) * 255;
+      color = std::clamp((color + ((waterLevel - d) * 255)) / 2, 0.0, 255.0);
+
+      //int b = 0;
+      //int g = 0;
+      //int r = 0;
+      if (color < DEEPWATER_MAX_HEIGHT)
+      {
+          color = DEEPWATER_COLOR;
+      }
+      else if (color < WATER_MAX_HEIGHT)
+      {
+          color = WATER_COLOR;
+      }
+      else if (color < BEACH_MAX_HEIGHT)
+      {
+          color = BEACH_COLOR;
+      }
+      else if (color < GRASS_MAX_HEIGHT)
+      {
+          color = GRASS_COLOR;
+      }
+      else if (color < MOUNTAIN_MAX_HEIGHT)
+      {
+          color = MOUNTAIN_COLOR;
+      }
+      else 
+      {
+          color = SNOW_COLOR;
+      }
+
       // Now we can set the pixel(s) we want.
       output[pixelPosition] = color;
     }
@@ -105,6 +148,16 @@ void Manager::OnGui(ImGuiContext* context) {
 
   if(ImGui::Button("Generate")) {
     step();
+  }
+
+  static float newWaterLevel = waterLevel;
+
+  if (ImGui::SliderFloat("Water Level", &newWaterLevel, .1f, 2.0f)) {
+      //newSize = (newSize/4)*4 + 1;
+      if (newWaterLevel != waterLevel) {
+          waterLevel = newWaterLevel;
+          Clear();
+      }
   }
 
   ImGui::Text("Simulation");
