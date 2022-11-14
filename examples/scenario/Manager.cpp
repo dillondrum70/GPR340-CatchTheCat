@@ -40,7 +40,7 @@ void Manager::SetPixels(std::vector<Color32> &input) {
       // Before setting the color, we need to know where we have to place it.
       Uint32 pixelPosition = (line * w + column);
 
-      color = color % 256;
+      Uint32 height = color % 256;
       
       double nx = (2 * ((double)column / (double)w)) - 1;
       double ny = (2 * ((double)line / (double)h)) - 1;
@@ -50,35 +50,43 @@ void Manager::SetPixels(std::vector<Color32> &input) {
       //double d = ((nx * nx) + (ny * ny)) / sqrt2;
       //color = std::clamp((int)d * 255, 0, 255);
       //color = (1 - d) * 255;
-      color = std::clamp((color + ((waterLevel - d) * 255)) / 2, 0.0, 255.0);
+      height = std::clamp((height + ((waterLevel - d) * 255)) / 2, 0.0, 255.0);
 
-      //int b = 0;
-      //int g = 0;
-      //int r = 0;
-      if (color < DEEPWATER_MAX_HEIGHT)
+      Uint32 b = 0;
+      Uint32 g = 0;
+      Uint32 r = 0;
+      if (height < DEEPWATER_MAX_HEIGHT)
       {
-          color = DEEPWATER_COLOR;
+          //color = DEEPWATER_COLOR;
+          color = LerpColor(DEEPEST_COLOR, DEEPWATER_COLOR, LOWEST_HEIGHT, DEEPWATER_MAX_HEIGHT, height);
       }
-      else if (color < WATER_MAX_HEIGHT)
+      else if (height < WATER_MAX_HEIGHT)
       {
-          color = WATER_COLOR;
+          //color = WATER_COLOR;
+          color = LerpColor(DEEPWATER_COLOR, WATER_COLOR, DEEPWATER_MAX_HEIGHT, WATER_MAX_HEIGHT, height);
       }
-      else if (color < BEACH_MAX_HEIGHT)
+      else if (height < BEACH_MAX_HEIGHT)
       {
-          color = BEACH_COLOR;
+          //color = BEACH_COLOR;
+          color = LerpColor(WATER_COLOR, BEACH_COLOR, WATER_MAX_HEIGHT, BEACH_MAX_HEIGHT, height);
       }
-      else if (color < GRASS_MAX_HEIGHT)
+      else if (height < GRASS_MAX_HEIGHT)
       {
-          color = GRASS_COLOR;
+          //color = GRASS_COLOR;
+          color = LerpColor(BEACH_COLOR, GRASS_COLOR, BEACH_MAX_HEIGHT, GRASS_MAX_HEIGHT, height);
       }
-      else if (color < MOUNTAIN_MAX_HEIGHT)
+      else if (height < MOUNTAIN_MAX_HEIGHT)
       {
-          color = MOUNTAIN_COLOR;
+          //color = MOUNTAIN_COLOR;
+          color = LerpColor(GRASS_COLOR, MOUNTAIN_COLOR, GRASS_MAX_HEIGHT, MOUNTAIN_MAX_HEIGHT, height);
       }
       else 
       {
-          color = SNOW_COLOR;
+          //color = SNOW_COLOR;
+          color = LerpColor(MOUNTAIN_COLOR, SNOW_COLOR, MOUNTAIN_MAX_HEIGHT, MAX_HEIGHT, height);
       }
+
+      //color = (b * 255 * 255 + g * 255 + r);
 
       // Now we can set the pixel(s) we want.
       output[pixelPosition] = color;
@@ -87,6 +95,7 @@ void Manager::SetPixels(std::vector<Color32> &input) {
   // Also don't forget to unlock your texture once you're done.
   SDL_UnlockTexture(texture);
 }
+
 void Manager::OnDraw(SDL_Renderer* renderer) {
   auto windowSize = engine->window->size();
   auto center = Point2D(windowSize.x/2, windowSize.y/2);
@@ -197,4 +206,24 @@ void Manager::step() {
   SetPixels(pixels);
   auto end = std::chrono::high_resolution_clock::now();
   std::cout <<  std::chrono::duration_cast<std::chrono::microseconds>(step - start).count() << " " << std::chrono::duration_cast<std::chrono::microseconds>(end - step).count() << std::endl;
+}
+
+Uint32 Manager::LerpColor(Uint32 startColor, Uint32 endColor, Uint32 startHeight, Uint32 endHeight, Uint32 currentHeight)
+{
+    //bit shift color value to get 8 bits each of blue, green, and red
+    //Keeping these values separate prevents us from accidentally going into the bits of the other colors
+    Uint32 b = (endColor & BLUE_BITMASK) >> 16;
+    Uint32 g = (endColor & GREEN_BITMASK) >> 8;
+    Uint32 r = endColor & RED_BITMASK;
+
+    Uint32 lastB = (startColor & BLUE_BITMASK) >> 16;
+    Uint32 lastG = (startColor & GREEN_BITMASK) >> 8;
+    Uint32 lastR = startColor & RED_BITMASK;
+
+    //Calculate what percentatage current height is between the start and end (linearly interpolate)
+    double factor = ((double)currentHeight - (double)startHeight) / ((double)endHeight - (double)startHeight);
+
+    //Multiply the next color by the factor and the last color by the inverse to get gradient value between the two
+    //Bitshift blue and green back to original positions
+    return ((int)((b * factor) + (lastB * (1 - factor))) << 16) + ((int)((g * factor) + (lastG * (1 - factor))) << 8) + ((r * factor) + (lastR * (1 - factor)));
 }
